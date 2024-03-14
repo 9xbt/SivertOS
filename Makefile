@@ -1,12 +1,11 @@
 all:
 	make build
-	qemu-system-x86_64 -cdrom kernel.iso
+	qemu-system-i386 -drive format=raw,file=bin/SivertOS.bin
 
 build:
-	nasm -f bin -o kernel.bin src/kernel.asm
-	mv kernel.bin bin/kernel.bin
-	mkisofs -b kernel.bin -no-emul-boot -o kernel.iso bin/
-	
+	nasm -f bin -o bin/entry.bin src/entry.asm
+	nasm -f bin -o bin/kernel.bin src/kernel.asm
+	cat bin/entry.bin bin/kernel.bin > bin/SivertOS.bin
+
 clean:
-	rm -rvf kernel.bin
-	rm -rvf kernel.iso
+	rm -rf bin
