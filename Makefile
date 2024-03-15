@@ -4,19 +4,19 @@ run:
 	qemu-system-i386 -drive format=raw,file=bin\SivertOS.bin
 
 build:
-	nasm -f bin -o bin/entry.bin src/entry.asm
-	nasm -f bin -o bin/kernel.bin src/kernel.asm
+	nasm -f bin -o bin/loader.bin src/i386/loader/loader.asm
+	nasm -f bin -o bin/kernel.bin src/i386/kernel/kernel.asm
 
 link:
 ifeq ($(OS), Windows_NT)
-	cmd /c copy /b bin\entry.bin+bin\kernel.bin bin\SivertOS.bin
+	cmd /c copy /b bin\loader.bin+bin\kernel.bin bin\SivertOS.bin
 else
-	cat bin/entry.bin bin/kernel.bin > bin/SivertOS.bin
+	cat bin/loader.bin bin/kernel.bin > bin/SivertOS.bin
 endif
 
 clean:
 ifeq ($(OS), Windows_NT)
-	rm -r -fo bin
+	powershell rm -r -fo bin
 	mkdir bin
 else
 	rm -rf bin
