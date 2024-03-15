@@ -1,7 +1,7 @@
 all: build link run
 
 run:
-	qemu-system-i386 -drive format=raw,file=bin\SivertOS.bin
+	qemu-system-i386 -drive format=raw,file=bin/SivertOS.bin
 
 build:
 	nasm -f bin -o bin/loader.bin src/i386/loader/loader.asm
