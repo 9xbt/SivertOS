@@ -1,6 +1,6 @@
-all:
-	make build
-	make link
+all: build link run
+
+run:
 	qemu-system-i386 -drive format=raw,file=bin\SivertOS.bin
 
 build:
@@ -9,7 +9,7 @@ build:
 
 link:
 ifeq ($(OS), Windows_NT)
-	powershell cat bin/entry.bin bin/kernel.bin > bin/SivertOS.bin
+	cmd /c copy /b bin\entry.bin+bin\kernel.bin bin\SivertOS.bin
 else
 	cat bin/entry.bin bin/kernel.bin > bin/SivertOS.bin
 endif
