@@ -1,5 +1,3 @@
-[BITS 16]
-
 vga_clear:
     mov ax, 3 ; video mode
     int 10h   ; set the video mode
