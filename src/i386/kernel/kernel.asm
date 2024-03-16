@@ -6,11 +6,13 @@
 
 call vga_clear
 
-mov si, test_string
+mov si, str_1
 call vga_write
+
+; TODO: disable NMIs, enable A20, and load the GDT
 
 jmp $
 
 %include "src/i386/drivers/vga.asm"
 
-test_string: db "Hello, world!", 0
+str_1: db "Let's switch into protected mode!", 0

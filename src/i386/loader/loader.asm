@@ -22,15 +22,11 @@ int 10h
 
 jc $ ; halt if an error occurs
 
-;mov ax, 0     ; move zero to ax
-;mov ds, ax    ; set the data segment to ax
-;mov es, ax    ; set the extended segment to ax
-;mov ss, ax    ; set the stack segment to ax
-;mov sp, 500h  ; set the stack pointer address
-
-;in al, 0x92
-;or al, 2
-;out 0x92, al
+mov ax, 0     ; move zero to ax
+mov ds, ax    ; set the data segment to ax
+mov es, ax    ; set the extended segment to ax
+mov ss, ax    ; set the stack segment to ax
+mov sp, 900h  ; set the stack pointer address
 
 jmp 0:900h ; start the kernel
 
