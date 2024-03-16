@@ -16,8 +16,8 @@ endif
 
 clean:
 ifeq ($(OS), Windows_NT)
-	powershell rm -r -fo bin
-	mkdir bin
+	- powershell rm -r -fo bin
 else
-	rm -rf bin
+	- rm -rf bin
 endif
+	mkdir bin
