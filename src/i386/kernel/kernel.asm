@@ -1,17 +1,20 @@
 [BITS 16]
-[ORG 0x500]
+[ORG 900h]
 
-call vga_clear
-
-mov si, test_string
-call vga_write
-
-mov al, 'B'
-mov ah, 0xE
-int 10h
-
-jmp $
-
-test_string: db "Hello, world!", 0
+jmp _start
 
 %include "src/i386/drivers/vga.asm"
+
+_start:
+    ;call vga_clear
+
+    mov al, 'A'
+    mov ah, 0xE
+    int 10h
+
+    mov si, test_string
+    call vga_write
+
+    jmp $
+
+test_string: db "Hello, world!", 0

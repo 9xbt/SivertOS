@@ -6,15 +6,13 @@ vga_clear:
     ret       ; retire from the function
 
 vga_write:
+    mov ah, 0xE ; function code = teletype output
+
     .loop:
         lodsb     ; load string byte
-        or al, al ; check if al is null
-        jz .end   ; return if null
-
-        mov al, 'A'
-        mov ah, 0xE ; function code = teletype output
-        int 10h     ; print the character
-
-        jmp vga_write ; loop
+        or al, al ; check for string terminator
+        jz .end   ; retire from the loop
+        int 10h   ; print the character
+        jmp .loop ; loop
     .end:
         ret ; retire from the function
