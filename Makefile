@@ -4,12 +4,12 @@ run:
 	qemu-system-i386 -drive format=raw,file=bin/SivertOS.bin
 
 build:
-	nasm -f bin -o bin/loader.bin src/i386/loader/loader.asm
-	nasm -f bin -o bin/kernel.bin src/i386/kernel/kernel.asm
+	mkdir -p bin/bootloader
+	nasm -f bin -o bin/bootloader/stage1.bin src/arch/i386/bootloader/stage1.asm
+	nasm -f bin -o bin/bootloader/stage2.bin src/arch/i386/bootloader/stage2.asm
 
 link:
-	cat bin/loader.bin bin/kernel.bin > bin/SivertOS.bin
+	cat bin/bootloader/stage1.bin bin/bootloader/stage2.bin > bin/SivertOS.bin
 
 clean:
-	- rm -rf bin
-	mkdir bin
+	rm -rf bin
