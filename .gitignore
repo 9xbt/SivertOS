@@ -1,2 +1,4 @@
-# Build output
-bin/
+/limine
+/ovmf
+*.iso
+*.hdd
