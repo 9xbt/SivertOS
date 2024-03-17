@@ -12,7 +12,14 @@ lgdt [gdt]
 mov eax, cr0
 or eax, 1
 mov cr0, eax
-
-jmp $
+jmp 0x08:protected_mode_code
 
 %include "src/arch/i386/tables/gdt.asm"
+
+[BITS 32]
+
+protected_mode_code:
+    mov al, 'A',
+    mov ah, 0x0F
+    mov [0xB8000], ax
+    jmp $
