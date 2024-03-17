@@ -1,6 +1,9 @@
 ; This file is part of SivertOS, the radioactive 16-bit assembly operating system
 ; https://github.com/9xbt/SivertOS
 
+%ifndef VGA_ASM
+%define VGA_ASM
+
 vga_clear:
     mov ax, 3 ; video mode
     int 10h   ; set the video mode
@@ -17,3 +20,5 @@ vga_write:
         jmp .loop ; loop
     .end:
         ret ; retire from the function
+
+%endif

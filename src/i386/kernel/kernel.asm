@@ -4,15 +4,24 @@
 [BITS 16]
 [ORG 900h]
 
-call vga_clear
-
-mov si, str_1
-call vga_write
+mov ax, 0     ; move zero to ax
+mov ds, ax    ; set the data segment to ax
+mov es, ax    ; set the extended segment to ax
+mov ss, ax    ; set the stack segment to ax
+mov sp, 900h  ; set the stack pointer address
 
 ; TODO: disable NMIs, enable A20, and load the GDT
 
+call disable_nmi
+
+mov si, nmi_msg
+call vga_write
+
+call enable_a20
+
 jmp $
 
-%include "src/i386/drivers/vga.asm"
+%include "src/i386/hw/vga.asm"
+%include "src/i386/hw/pm.asm"
 
-str_1: db "Let's switch into protected mode!", 0
+nmi_msg: db "Disabled NMIs!", 0x0D, 0x0A, 0x00
