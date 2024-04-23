@@ -55,7 +55,7 @@ OBJ := $(addprefix obj/,$(CFILES:.c=.c.o) $(ASFILES:.S=.S.o) $(NASMFILES:.asm=.a
 KERNEL = SivertOS
 IMAGE_NAME = SivertOS
 
-all: limine bin/$(KERNEL)
+all: limine bin/$(KERNEL) iso run
 
 run:
 	qemu-system-x86_64 -M q35 -m 2G -cdrom $(IMAGE_NAME).iso -boot d
@@ -63,7 +63,7 @@ run:
 iso:
 	rm -rf iso_root
 	mkdir -p iso_root/boot
-	cp -rv bin iso_root/boot/
+	cp -va bin/. iso_root/boot/
 	mkdir -p iso_root/boot/limine
 	cp -v conf/limine.cfg limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin iso_root/boot/limine/
 	mkdir -p iso_root/EFI/BOOT
