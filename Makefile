@@ -36,7 +36,7 @@ LDFLAGS = -m elf_x86_64 \
     --no-dynamic-linker \
     -z text \
     -z max-page-size=0x1000 \
-    -T linker.ld
+    -T conf/linker.ld
 
 # NASM flags
 NASMFLAGS = -F dwarf \
@@ -52,9 +52,10 @@ HEADER_DEPS := $(addprefix obj/,$(CFILES:.c=.c.d) $(ASFILES:.S=.S.d))
 
 # Output
 OBJ := $(addprefix obj/,$(CFILES:.c=.c.o) $(ASFILES:.S=.S.o) $(NASMFILES:.asm=.asm.o))
+KERNEL = SivertOS
 IMAGE_NAME = SivertOS
 
-all: limine $(OUT)
+all: limine bin/$(KERNEL)
 
 run:
 	qemu-system-x86_64 -M q35 -m 2G -cdrom $(IMAGE_NAME).iso -boot d
@@ -62,9 +63,9 @@ run:
 iso:
 	rm -rf iso_root
 	mkdir -p iso_root/boot
-	cp -v kernel/bin/kernel iso_root/boot/
+	cp -rv bin iso_root/boot/
 	mkdir -p iso_root/boot/limine
-	cp -v limine.cfg limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin iso_root/boot/limine/
+	cp -v conf/limine.cfg limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin iso_root/boot/limine/
 	mkdir -p iso_root/EFI/BOOT
 	cp -v limine/BOOTX64.EFI iso_root/EFI/BOOT/
 	cp -v limine/BOOTIA32.EFI iso_root/EFI/BOOT/
@@ -76,7 +77,7 @@ iso:
 	./limine/limine bios-install $(IMAGE_NAME).iso
 	rm -rf iso_root
 
-bin/$(KERNEL): Makefile linker.ld $(OBJ)
+bin/$(KERNEL): Makefile conf/linker.ld $(OBJ)
 	mkdir -p "$$(dirname $@)"
 	$(LD) $(OBJ) $(LDFLAGS) -o $@
     
