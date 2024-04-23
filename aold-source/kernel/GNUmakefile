@@ -103,6 +103,7 @@ bin/$(KERNEL): GNUmakefile linker.ld $(OBJ)
 	$(LD) $(OBJ) $(LDFLAGS) -o $@
 
 # Include header dependencies.
+# ? tf i guess its a makefile thing but why?
 -include $(HEADER_DEPS)
 
 # Compilation rules for *.c files.
