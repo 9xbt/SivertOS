@@ -2,8 +2,8 @@
 A small, hobbyist 64-bit operating system
 
 ### Features
-- [ ] Limine Boot Protocol
-- [ ] GDT
+- [X] Limine Boot Protocol
+- [X] GDT
 - [ ] IDT
 - [ ] PS/2 driver
     - [ ] Keyboard
