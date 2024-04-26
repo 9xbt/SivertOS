@@ -1,8 +1,8 @@
 # SivertOS
-A small, hobbyist 64-bit operating system
+A small hobbyist 64-bit operating system
 
 > [!NOTE]
-> SivertOS is in a very early stage of development and it's not recommended to use it
+> SivertOS is in a very early stage of development, so it's not recommended for use on real hardware.
 
 ### Features
 - [X] Limine Boot Protocol
