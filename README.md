@@ -5,7 +5,7 @@ A small hobbyist 64-bit operating system
 > SivertOS is in a very early stage of development, so it's not recommended for use on real hardware.
 
 ### Features
-- [X] Limine Boot Protocol
+- [X] VBE
 - [X] GDT
 - [ ] IDT
 - [ ] PS/2 driver
@@ -14,4 +14,4 @@ A small hobbyist 64-bit operating system
 - [ ] Serial driver
 - [ ] ATA driver
 - [ ] RTC driver
-- [ ] GUI (someday)
+- [ ] GUI

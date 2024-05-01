@@ -25,6 +25,5 @@ void _start(void) {
     const char msg[] = "Welcome to \033[1;36mSivertOS\033[0m!";
     flanterm_write(ft_ctx, msg, sizeof(msg));
 
-    // We're done, just hang...
     hcf();
 }
