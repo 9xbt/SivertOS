@@ -1,18 +1,18 @@
 #include <types.h>
 #include <limine.h>
 #include <video/vbe.h>
+#include <tools/logger.h>
 #include <arch/x86_64/io.h>
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/tables/gdt/gdt.h>
 #include <flanterm/flanterm.h>
 #include <flanterm/backends/fb.h>
 
-static volatile LIMINE_BASE_REVISION(1);
+struct flanterm_context *flanterm_context;
 
-static void hcf(void) {
-    asm ("cli");
+void idle(void) {
     for (;;) {
-        asm ("hlt");
+        __asm__ ("hlt");
     }
 }
 
@@ -21,14 +21,12 @@ void _start(void) {
     serial_init();
     vbe_init();
 
-    serial_send("Hello, world! Serial driver is working\n");
-
-    struct flanterm_context *ft_ctx = flanterm_fb_simple_init(
+    flanterm_context = flanterm_fb_simple_init(
         vbe_addr, vbe_width, vbe_height, vbe_pitch
     );
 
-    const char msg[] = "Welcome to \033[1;36mSivertOS\033[0m!";
-    flanterm_write(ft_ctx, msg, sizeof(msg));
+    const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
+    flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
 
-    hcf();
+    idle();
 }

@@ -3,6 +3,8 @@
         "*.inc": "nasm",
         "stdint.h": "c",
         "flanterm.h": "c",
-        "gdt.h": "c"
+        "gdt.h": "c",
+        "io.h": "c",
+        "logger.h": "c"
     }
 }

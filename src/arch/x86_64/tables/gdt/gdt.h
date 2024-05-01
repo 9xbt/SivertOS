@@ -8,3 +8,5 @@ typedef struct {
 } __attribute__((packed)) gdtr;
 
 void gdt_init();
+
+extern gdtr gdt_data;
