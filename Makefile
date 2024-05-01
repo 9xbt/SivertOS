@@ -24,7 +24,7 @@ CFLAGS = -g \
     -mno-red-zone
 	
 # C preprocessor flags
-CPFLAGS = -I src \
+CPPFLAGS = -I src \
 	-MMD \
 	-MP
 
