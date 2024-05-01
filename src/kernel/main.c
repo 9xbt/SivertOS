@@ -5,6 +5,7 @@
 #include <arch/x86_64/io.h>
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/tables/gdt/gdt.h>
+#include <arch/x86_64/tables/idt/idt.h>
 #include <flanterm/flanterm.h>
 #include <flanterm/backends/fb.h>
 
@@ -19,6 +20,7 @@ void idle(void) {
 void _start(void) {
     gdt_init();
     serial_init();
+    idt_init();
     vbe_init();
 
     flanterm_context = flanterm_fb_simple_init(
@@ -27,6 +29,10 @@ void _start(void) {
 
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
+
+    //asm ("movl 4, %eax");
+    //asm ("movl 0, %ebx");
+    //asm ("divl %ebx");
 
     idle();
 }
