@@ -40,3 +40,10 @@ void serial_wrap(char c, void* extra) {
     (void)extra;
     serial_write_char(c);
 }
+
+void serial_printf(char* pStr, ...) {
+    va_list args;
+    va_start(args, pStr);
+    vfctprintf(serial_wrap, NULL, pStr, args);
+    va_end(args);
+}

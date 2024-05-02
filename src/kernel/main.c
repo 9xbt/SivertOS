@@ -11,7 +11,7 @@
 
 struct flanterm_context *flanterm_context;
 
-void idle(void) {
+void kernel_idle(void) {
     for (;;) {
         __asm__ ("hlt");
     }
@@ -30,9 +30,16 @@ void _start(void) {
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
 
-    //asm ("movl 4, %eax");
-    //asm ("movl 0, %ebx");
-    //asm ("divl %ebx");
+    __asm__ volatile ("int $0x7F");
 
-    idle();
+    kernel_idle();
+}
+
+void putchar_(char c) {
+    char msg[] = {c, '\0'};
+    flanterm_write(flanterm_context, msg, sizeof(msg));
+}
+
+void flanterm_wrap(char c, void* unused) {
+
 }

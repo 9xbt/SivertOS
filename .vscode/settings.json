@@ -5,6 +5,8 @@
         "flanterm.h": "c",
         "gdt.h": "c",
         "io.h": "c",
-        "logger.h": "c"
+        "logger.h": "c",
+        "serial.h": "c",
+        "idt.h": "c"
     }
 }

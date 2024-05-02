@@ -5,13 +5,12 @@ A small hobbyist 64-bit operating system
 > SivertOS is in a very early stage of development, so it's not recommended for use on real hardware.
 
 ### Features
-- [X] VBE
 - [X] GDT
-- [ ] IDT
+- [X] IDT
 - [ ] PS/2 driver
     - [ ] Keyboard
     - [ ] Mouse
-- [ ] Serial driver
+- [X] Serial driver
+- [X] Formatted print
 - [ ] ATA driver
 - [ ] RTC driver
-- [ ] GUI
