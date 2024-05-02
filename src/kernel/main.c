@@ -6,6 +6,8 @@
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/tables/gdt/gdt.h>
 #include <arch/x86_64/tables/idt/idt.h>
+#include <arch/x86_64/cpu/pic.h>
+#include <drivers/kb.h>
 #include <flanterm/flanterm.h>
 #include <flanterm/backends/fb.h>
 
@@ -20,7 +22,13 @@ void kernel_idle(void) {
 void _start(void) {
     gdt_init();
     serial_init();
+
+    __asm__ ("cli");
     idt_init();
+    pic_remap();
+    __asm__ ("sti");
+
+    kb_init();
     vbe_init();
 
     flanterm_context = flanterm_fb_simple_init(
@@ -30,7 +38,13 @@ void _start(void) {
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
 
-    __asm__ volatile ("int $0x7F");
+    char key = NULL;
+    for (;;) {
+        while (kb_get_char() == NULL) {
+        }
+
+        flanterm_write(flanterm_context, "t", 1);
+    }
 
     kernel_idle();
 }

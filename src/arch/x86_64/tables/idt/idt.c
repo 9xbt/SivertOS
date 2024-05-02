@@ -1,3 +1,8 @@
+/*
+ * Credits to astrido for making this code
+ * https://github.com/asterd-og/
+ */
+
 #include <arch/x86_64/tables/idt/idt.h>
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/cpu/pic.h>

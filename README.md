@@ -11,6 +11,6 @@ A small hobbyist 64-bit operating system
     - [ ] Keyboard
     - [ ] Mouse
 - [X] Serial driver
-- [X] Formatted print
+- [X] Formatted printing (printf)
 - [ ] ATA driver
 - [ ] RTC driver
