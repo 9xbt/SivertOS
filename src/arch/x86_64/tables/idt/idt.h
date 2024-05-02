@@ -1,6 +1,6 @@
 /*
- * Credits to astrido for making this code
- * https://github.com/asterd-og/
+ * CREDITS: asterd-og on GitHub
+ * https://github.com/asterd-og/QuasarOS/
  */
 
 #pragma once

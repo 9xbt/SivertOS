@@ -38,6 +38,7 @@ void _start(void) {
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
 
+    /*
     char key = NULL;
     for (;;) {
         while (kb_get_char() == NULL) {
@@ -45,6 +46,21 @@ void _start(void) {
 
         flanterm_write(flanterm_context, "t", 1);
     }
+    */
+
+    int arr[4];
+    arr[4] = 10;
+
+    _Bool* boolPtr;
+    int value = 188;
+
+    boolPtr = (_Bool*)&value; // Assign a non-zero value to a _Bool pointer
+
+    // Print the value to avoid optimization
+    printf("Bool value: %d\n", *boolPtr);
+
+    int* val = NULL;
+    int a = *val;
 
     kernel_idle();
 }
@@ -54,6 +70,11 @@ void putchar_(char c) {
     flanterm_write(flanterm_context, msg, sizeof(msg));
 }
 
-void flanterm_wrap(char c, void* unused) {
+int mubsan_log(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    const int ret = vprintf(format, args);
+    va_end(args);
 
+    return ret;
 }

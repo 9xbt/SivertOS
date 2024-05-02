@@ -50,5 +50,5 @@ char kb_get_char() {
 }
 
 void kb_init() {
-    irq_register(1, kb_handler); // if this doesnt work try replacing 1 with 33
+    irq_register(1, kb_handler);
 }
