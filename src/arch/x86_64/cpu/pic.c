@@ -12,8 +12,8 @@ void pic_remap() {
     outb(PIC1_DAT, ICW4_8086); // Use 8086 PIC
     outb(PIC2_DAT, ICW4_8086);
 
-    outb(PIC1_DAT, 0xfd); // Master PIC mask
-    outb(PIC2_DAT, 0xff); // Slave PIC mask
+    outb(PIC1_DAT, 0); // Master PIC mask
+    outb(PIC2_DAT, 0); // Slave PIC mask
 }
 
 void pic_eoi(u8 no) {
