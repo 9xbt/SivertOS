@@ -3,13 +3,14 @@
 char* shell_get_input();
 
 void shell_exec() {
+    printf("$ ");
     char* input = shell_get_input();
-    
-    printf("Input: %s\n", input);
+
+    if (!strcmp(input, "clear")) {
+        flanterm_write(flanterm_context, "\033[2J\033[H", 7);
+    }
 
     kfree(input);
-
-    printf("Input freed!\n");
 }
 
 char* shell_get_input() {
