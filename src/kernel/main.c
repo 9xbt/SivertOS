@@ -56,14 +56,3 @@ void putchar_(char c) {
     char msg[] = {c, '\0'};
     flanterm_write(flanterm_context, msg, sizeof(msg));
 }
-
-int mubsan_log(const char* format, ...) {
-    printf("Test");
-
-    va_list args;
-    va_start(args, format);
-    const int ret = vprintf(format, args);
-    va_end(args);
-
-    return ret;
-}

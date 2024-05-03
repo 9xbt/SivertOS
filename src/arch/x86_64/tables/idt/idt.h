@@ -1,6 +1,6 @@
 /*
- * CREDITS: asterd-og on GitHub
- * https://github.com/asterd-og/QuasarOS/
+ *  CREDITS: asterd-og on GitHub
+ *  https://github.com/asterd-og/QuasarOS/
  */
 
 #pragma once

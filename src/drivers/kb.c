@@ -14,7 +14,11 @@ void kb_handler(registers* regs) {
         // Key was pressed
         switch (key) {
             case 0x2a:
-                // Shift
+                // Left shift
+                kb_shift = true;
+                break;
+            case 0x36:
+                // Right shift
                 kb_shift = true;
                 break;
             case 0x3a:
@@ -32,7 +36,11 @@ void kb_handler(registers* regs) {
     } else {
         switch (key) {
             case 0xaa:
-                // Shift was released
+                // Left shift released
+                kb_shift = false;
+                break;
+            case 0xb6:
+                // Right shift released
                 kb_shift = false;
                 break;
         }

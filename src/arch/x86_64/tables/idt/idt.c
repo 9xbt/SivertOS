@@ -1,6 +1,6 @@
 /*
- * CREDITS: asterd-og on GitHub
- * https://github.com/asterd-og/QuasarOS/
+ *  CREDITS: asterd-og on GitHub
+ *  https://github.com/asterd-og/QuasarOS/
  */
 
 #include <arch/x86_64/tables/idt/idt.h>
@@ -93,7 +93,7 @@ void isr_handler(registers* r) {
         return; // Spurious interrupt   
 
     __asm__ volatile("cli");
-    printf("isr_handler(): System fault! %s.\n", idt_msg[r->int_no]);
+    printf("\nisr_handler(): System fault! %s.\n", idt_msg[r->int_no]);
     for (;;) __asm__ volatile("hlt");
 }
 
