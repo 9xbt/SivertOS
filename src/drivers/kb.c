@@ -6,6 +6,10 @@ bool kb_caps = false;
 bool kb_shift = false;
 
 void kb_handler(registers* regs) {
+    printf("Key press!\n");
+
+    return;
+
     (void)regs;
 
     u8 key = inb(0x60);

@@ -3,13 +3,14 @@
 #include <video/vbe.h>
 #include <tools/logger.h>
 #include <arch/x86_64/io.h>
+#include <arch/x86_64/cpu/pic.h>
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/tables/gdt/gdt.h>
 #include <arch/x86_64/tables/idt/idt.h>
-#include <arch/x86_64/cpu/pic.h>
 #include <drivers/kb.h>
 #include <flanterm/flanterm.h>
 #include <flanterm/backends/fb.h>
+#include <libc/printf.h>
 
 struct flanterm_context *flanterm_context;
 
@@ -38,31 +39,23 @@ void _start(void) {
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
 
-    /*
-    char key = NULL;
+    printf("No freezie before read key mate\n");
+
+    __asm__ ("int $33");
+
+    printf("Interrupt pass?\n");
+
+    printf("No freezie mate\n");
+
+    char a = 0;
     for (;;) {
-        while (kb_get_char() == NULL) {
-        }
-
-        flanterm_write(flanterm_context, "t", 1);
+        a = inb(0x64);
+        putchar_(a);
     }
-    */
-
-    int arr[4];
-    arr[4] = 10;
-
-    _Bool* boolPtr;
-    int value = 188;
-
-    boolPtr = (_Bool*)&value; // Assign a non-zero value to a _Bool pointer
-
-    // Print the value to avoid optimization
-    printf("Bool value: %d\n", *boolPtr);
-
-    int* val = NULL;
-    int a = *val;
-
-    kernel_idle();
+    
+    for (;;) {
+        __asm__ ("hlt");
+    }
 }
 
 void putchar_(char c) {
@@ -71,6 +64,8 @@ void putchar_(char c) {
 }
 
 int mubsan_log(const char* format, ...) {
+    printf("Test");
+
     va_list args;
     va_start(args, format);
     const int ret = vprintf(format, args);

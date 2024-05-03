@@ -1,5 +1,7 @@
 #include <tools/logger.h>
 
+void logger_log_generic(char* type, char* msg, usize msg_len);
+
 void logger_info(char* buf, usize count) {
     logger_log_generic("\033[1;94m[ INFO ]\033[0m ", buf, count);
 }

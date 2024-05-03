@@ -15,7 +15,7 @@ static idt_entry idt_entries[256];
 static idtr      idt_data;
 extern void*     idt_int_table[];
 
-void* irq_handlers[17] = {0};
+void* irq_handlers[16] = {0};
 
 static const char* idt_msg[32] = {
     "Division by zero",
@@ -53,11 +53,11 @@ static const char* idt_msg[32] = {
 };
 
 void idt_init() {
-    for (u16 vec = 0; vec < 256; vec++)
+    for (u16 vec = 0; vec < 48; vec++)
         idt_set_entry(vec, idt_int_table[vec]);
 
     idt_data = (idtr) {
-        .size   = (u16)sizeof(idt_entry) * 256 - 1,
+        .size   = (u16)sizeof(idt_entry) * 48 - 1,
         .offset = (u64)idt_entries
     };
 
@@ -102,6 +102,9 @@ void irq_handler(registers* r) {
 
     handler = irq_handlers[r->int_no - 32];
 
-    if (handler != NULL)
+    if ((u64)irq_handlers[r->int_no - 32] != 0) {
         handler(r);
+    }
+    
+    pic_eoi(r->int_no - 32);
 }

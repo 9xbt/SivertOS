@@ -11,13 +11,14 @@ void pic_remap() {
     outb(PIC1_CMD, ICW1_INIT | ICW1_ICW4);
     outb(PIC2_CMD, ICW1_INIT | ICW1_ICW4);
     outb(PIC1_DAT, 0x20); // Master PIC offset
-    outb(PIC2_DAT, 0x28); // Slave  PIC offset
+    outb(PIC2_DAT, 0x28); // Slave PIC offset
     outb(PIC1_DAT, 0x04); // Tell master PIC there's slave PIC at IRQ2
     outb(PIC2_DAT, 0x02); // Tell slave PIC it's cascade identity
     outb(PIC1_DAT, ICW4_8086); // Use 8086 PIC
     outb(PIC2_DAT, ICW4_8086);
-    outb(PIC1_DAT, a1); // Set mask
-    outb(PIC2_DAT, a2);
+
+    outb(PIC1_DAT, a1); // Master PIC mask
+    outb(PIC2_DAT, a2); // Slave PIC mask
 }
 
 void pic_eoi(u8 no) {

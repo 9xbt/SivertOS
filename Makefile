@@ -101,7 +101,8 @@ limine:
 	make -C limine CC="cc" CFLAGS="-g -O2 -pipe" CPPFLAGS="" LDFLAGS="" LIBS=""
 
 clean:
-	rm -f $(OBJECTS) $(OUT)
+	rm -rf obj
+	rm $(IMAGE_NAME).iso
 
 clean-all: clean
 	rm -rf limine
