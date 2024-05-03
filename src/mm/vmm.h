@@ -4,6 +4,7 @@
 #include <mm/pmm.h>
 #include <kernel/kernel.h>
 #include <limine.h>
+#include <arch/x86_64/cpu/serial.h>
 
 #define vmm_flag_present 0b1
 #define vmm_flag_write (0b1ull << 1)

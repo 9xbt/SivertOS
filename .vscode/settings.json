@@ -8,6 +8,7 @@
         "logger.h": "c",
         "serial.h": "c",
         "idt.h": "c",
-        "pic.h": "c"
+        "pic.h": "c",
+        "kb_map.h": "c"
     }
 }

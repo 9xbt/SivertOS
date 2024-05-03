@@ -1,7 +1,6 @@
 #include <types.h>
 #include <limine.h>
 #include <video/vbe.h>
-#include <tools/logger.h>
 #include <arch/x86_64/io.h>
 #include <arch/x86_64/cpu/pic.h>
 #include <arch/x86_64/cpu/serial.h>
@@ -12,7 +11,9 @@
 #include <heap/heap.h>
 #include <flanterm/flanterm.h>
 #include <flanterm/backends/fb.h>
+#include <libc/panic.h>
 #include <libc/printf.h>
+#include <tools/shell.h>
 
 volatile struct limine_hhdm_request hhdm_request = {
     .id = LIMINE_HHDM_REQUEST,
@@ -49,16 +50,10 @@ void _start(void) {
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
 
-    u8 c = 0;
     for (;;) {
-        while (c == 0) {
-            c = kb_get_char();
-        }
-
-        putchar_(c);
-        c = 0;
+        shell_exec();
     }
-    
+
     kernel_idle();
 }
 

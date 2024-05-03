@@ -5,7 +5,7 @@ void panic(const char *format, ...) {
 
     va_list args;
     va_start(args, format);
-    const int ret = vprintf(format, args);
+    vprintf(format, args);
     va_end(args);
 
     printf(".\n");

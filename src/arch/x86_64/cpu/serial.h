@@ -6,3 +6,4 @@
 
 int serial_init();
 void serial_send(char* pStr);
+void serial_printf(char *fmt, ...);
