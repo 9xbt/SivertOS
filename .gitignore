@@ -1,4 +1,6 @@
 /limine
 /ovmf
+/bin
+/obj
 *.iso
 *.hdd
