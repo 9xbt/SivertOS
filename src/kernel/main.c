@@ -47,10 +47,14 @@ void _start(void) {
 
     printf("No freezie mate\n");
 
-    char a = 0;
+    u8 c = 0;
     for (;;) {
-        a = inb(0x64);
-        putchar_(a);
+        while (c == 0) {
+            c = kb_get_char();
+        }
+
+        putchar_(c);
+        c = 0;
     }
     
     for (;;) {
