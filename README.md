@@ -8,7 +8,7 @@ A small hobbyist 64-bit operating system
 - [X] GDT
 - [X] IDT
 - [ ] PS/2 driver
-    - [ ] Keyboard
+    - [X] Keyboard
     - [ ] Mouse
 - [X] Serial driver
 - [X] Formatted printing (printf)

@@ -39,14 +39,6 @@ void _start(void) {
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
 
-    printf("No freezie before read key mate\n");
-
-    __asm__ ("int $33");
-
-    printf("Interrupt pass?\n");
-
-    printf("No freezie mate\n");
-
     u8 c = 0;
     for (;;) {
         while (c == 0) {
@@ -57,9 +49,7 @@ void _start(void) {
         c = 0;
     }
     
-    for (;;) {
-        __asm__ ("hlt");
-    }
+    kernel_idle();
 }
 
 void putchar_(char c) {
