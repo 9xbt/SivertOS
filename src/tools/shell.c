@@ -9,8 +9,8 @@ void shell_exec() {
     if (!strcmp(input, "clear")) {
         flanterm_write(flanterm_context, "\033[2J\033[H", 7);
     }
-    if (!strcmp(input, "test")) {
-        printf("Hello, world!\n");
+    if (!strcmp(input, "help")) {
+        printf("%s", "Available commands: help, clear\n");
     }
 
     memset(input, 0, 256);

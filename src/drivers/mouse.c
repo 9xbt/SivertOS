@@ -4,7 +4,6 @@ u8 mouse_read();
 
 void mouse_handler(registers* regs) {
     printf("Mouse Interrupt!\n");
-
 }
 
 u8 mouse_read() {

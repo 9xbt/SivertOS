@@ -39,7 +39,7 @@ void _start(void) {
     __asm__ ("sti");
 
     kb_init();
-    mouse_init();
+    //mouse_init(); for some reason prints ~ to the screen
 
     pmm_init();
     vmm_init();
@@ -51,6 +51,8 @@ void _start(void) {
 
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
+
+    printf("%s", "*** Note that this is still in an early stage of development, and you might encounter a LOT of bugs ***\n\n");
 
     for (;;) {
         shell_exec();
