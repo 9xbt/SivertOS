@@ -2,20 +2,25 @@
 
 char* shell_get_input();
 
+
 void shell_exec() {
     printf("$ ");
-    char* input = shell_get_input();
+
+    char* input[256];
+    shell_get_string(input, 256);
 
     if (!strcmp(input, "clear")) {
         flanterm_write(flanterm_context, "\033[2J\033[H", 7);
     }
+    if (!strcmp(input, "test")) {
+        printf("Hello, world!\n");
+    }
 
-    kfree(input);
+    memset(input, 0, 256);
 }
 
-char* shell_get_input() {
-    char* ret = kmalloc(256);
-    u8 pos = 0;
+void shell_get_string(char* buf, size_t n) {
+    size_t pos = 0;
 
     u8 c = 0;
     for (;;) {
@@ -23,20 +28,28 @@ char* shell_get_input() {
             c = kb_get_char();
         }
 
-        putchar_(c);
         switch(c) {
             case '\n':
-                return ret;
+                printf("%s", "\n");
+                return;
 
             case '\b':
-                printf(" \b");
+                if (pos == 0)
+                    break;
+            
+                printf("%c%s", c, " \b");
 
-                ret[pos] = 0;
+                buf[pos] = 0;
                 pos--;
                 break;
 
             default:
-                ret[pos] = c;
+                if (pos >= n - 1)
+                    break;
+
+                printf("%c", c);
+
+                buf[pos] = c;
                 pos++;
                 break;
         }

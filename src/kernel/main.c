@@ -39,8 +39,8 @@ void _start(void) {
 
     kb_init();
 
-    pmm_init();
-    vmm_init();
+    //pmm_init();
+    //vmm_init();
 
     vbe_init();
     flanterm_context = flanterm_fb_simple_init(
@@ -60,4 +60,13 @@ void _start(void) {
 void putchar_(char c) {
     char msg[] = {c, '\0'};
     flanterm_write(flanterm_context, msg, sizeof(msg));
+}
+
+int mubsan_log(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    const int ret = vprintf(format, args);
+    va_end(args);
+
+    return ret;
 }
