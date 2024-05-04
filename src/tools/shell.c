@@ -1,8 +1,5 @@
 #include <tools/shell.h>
 
-char* shell_get_input();
-
-
 void shell_exec() {
     printf("$ ");
 

@@ -10,6 +10,7 @@
         "idt.h": "c",
         "pic.h": "c",
         "kb_map.h": "c",
-        "kb.h": "c"
+        "kb.h": "c",
+        "mouse.h": "c"
     }
 }

@@ -7,6 +7,7 @@
 #include <arch/x86_64/tables/gdt/gdt.h>
 #include <arch/x86_64/tables/idt/idt.h>
 #include <drivers/kb.h>
+#include <drivers/mouse.h>
 #include <mm/pmm.h>
 #include <heap/heap.h>
 #include <flanterm/flanterm.h>
@@ -38,9 +39,10 @@ void _start(void) {
     __asm__ ("sti");
 
     kb_init();
+    mouse_init();
 
-    //pmm_init();
-    //vmm_init();
+    pmm_init();
+    vmm_init();
 
     vbe_init();
     flanterm_context = flanterm_fb_simple_init(

@@ -171,7 +171,7 @@ void page_map_load(page_map* page_map) {
 void vmm_init() {
     page_map_kernel = (page_map*)to_higher_half(pmm_alloc(1));
     memset(page_map_kernel, 0, page_size);
-    serial_printf("kernel's page map is: 0x%lx\n", to_physical(page_map_kernel));
+    serial_printf("vmm_init(): kernel's page map is: 0x%lx\n", to_physical(page_map_kernel));
 
     kernel_size = kernel_file_request.response->kernel_file->size;
     phys_base = kernel_address_request.response->physical_base;
