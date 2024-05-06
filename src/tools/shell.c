@@ -12,6 +12,9 @@ void shell_exec() {
     if (!strcmp(input, "help")) {
         printf("%s", "Available commands: help, clear\n");
     }
+    if (!strcmp(input, "mousetest")) {
+        printf("Mouse X: %d", mouse_x);
+    }
 
     memset(input, 0, 256);
 }

@@ -32,27 +32,25 @@ void kernel_idle(void) {
 void _start(void) {
     gdt_init();
     serial_init();
-
+    vbe_init();
+    
     __asm__ ("cli");
     idt_init();
     pic_remap();
     __asm__ ("sti");
 
     kb_init();
-    //mouse_init(); for some reason prints ~ to the screen
+    mouse_init();
 
     pmm_init();
     vmm_init();
 
-    vbe_init();
     flanterm_context = flanterm_fb_simple_init(
         vbe_addr, vbe_width, vbe_height, vbe_pitch
     );
 
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
-
-    printf("%s", "*** Note that this is still in an early stage of development, and you might encounter a LOT of bugs ***\n\n");
 
     for (;;) {
         shell_exec();
