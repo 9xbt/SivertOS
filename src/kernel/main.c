@@ -72,3 +72,9 @@ int mubsan_log(const char* format, ...) {
 
     return ret;
 }
+
+u64 __stack_chk_guard = 47589200348; // This is meant be generated at runtime with a random number generator, but having it like this works just fine
+
+void __stack_chk_fail() {
+    panic("__stack_chk_fail(): something went wery wrong with the stack");
+}

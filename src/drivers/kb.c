@@ -1,9 +1,9 @@
 #include <drivers/kb.h>
 
-bool kb_key_pressed = false;
-char kb_current_char = '\0';
-bool kb_caps = false;
-bool kb_shift = false;
+u8 kb_key_pressed = false;
+u8 kb_current_char = '\0';
+u8 kb_caps = false;
+u8 kb_shift = false;
 
 void kb_handler(registers* regs) {
     (void)regs;
@@ -54,6 +54,63 @@ char kb_get_char() {
     } else {
         return '\0';
     }
+}
+
+void kb_get_string(char* buf, size_t n) {
+    printf("kb_get_string called\n");
+
+    memset(buf, NULL, n);
+    size_t pos = 0;
+
+    u8 reading = true;
+    do {
+        if (kb_get_char()) {
+            printf("yee\r");
+
+            for (int i = 0; i < 1000000; i++) {
+                asm volatile ("nop");
+            }
+        }
+        else {
+            printf("noo\r");
+        }
+
+        continue;
+
+        if (!kb_key_pressed)
+            continue;
+        kb_key_pressed = false;
+
+        switch(kb_current_char) {
+            case '\n':
+                printf("%s", "\n");
+                return;
+
+            case '\b':
+                if (pos == 0)
+                    break;
+            
+                printf("%c%s", kb_current_char, " \b");
+
+                buf[pos] = 0;
+                pos--;
+                break;
+
+            default:
+                if (pos >= n - 1)
+                    break;
+
+                printf("%c", kb_current_char);
+
+                buf[pos] = kb_current_char;
+                pos++;
+                break;
+        }
+
+        printf("kb_get_string loop\n");
+    } while (reading);
+
+    printf("kb_get_string ended\n");
 }
 
 void kb_init() {

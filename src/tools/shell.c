@@ -8,13 +8,13 @@ const char *shell_cmds[] = {
     "mousetest"
 };
 
-const char** shell_cmd_descriptions = {
+const char *shell_cmd_descriptions[] = {
     "Shows this page",
     "Clears the screen",
     "Test command for the mouse driver"
 };
 
-void** shell_cmd_handlers = {
+void *shell_cmd_handlers[] = {
     shell_cmd_help,
     shell_cmd_clear,
     shell_cmd_mousetest
@@ -23,35 +23,28 @@ void** shell_cmd_handlers = {
 void shell_exec() {
     printf("> ");
 
-    char* input[256];
-    shell_get_string(input, 256);
+    char input[256];
+    //memset(input, 0, 256);
+    kb_get_string(input, 256);
+
+    if (!strcmp(input, "")) {
+        return;
+    }
 
     for (int i = 0; i < shell_cmds_len; i++) {
-
         if (!strcmp(input, shell_cmds[i])) {
-            printf("YOUR COMMAND WORKY! %s\n", shell_cmds[i]);
-
             void(*handler)(int, char**);
 
             handler = shell_cmd_handlers[i];
 
-            //if ((u64)shell_cmd_handlers[i] != NULL)
-                handler(0, NULL); // This mister right here page faults. And i get page faults a lot
-                                  // For example the shell_get_string void i have i would've put it in kb.c but i get a page fault when trying to run it.
-                                  // Any clues anyone?
+            if (shell_cmd_handlers[i] != NULL)
+                handler(0, NULL);
+
+            return;
         }
     }
 
-    /*if (!strcmp(input, "clear")) {
-    }
-    else if (!strcmp(input, "help")) {
-    }
-    else if (!strcmp(input, "mousetest")) {
-    }
-    else {
-    }*/
-
-    memset(input, 0, 256);
+    printf("%s: command not found\n", input);
 }
 
 void shell_get_string(char* buf, size_t n) {
