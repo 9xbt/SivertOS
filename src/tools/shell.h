@@ -1,12 +1,11 @@
 #pragma once
 
 #include <types.h>
-#include <heap/heap.h>
 #include <drivers/kb.h>
-#include <drivers/mouse.h>
 #include <libc/printf.h>
 #include <libc/string.h>
-#include <kernel/kernel.h>
-#include <flanterm/flanterm.h>
+#include <tools/shell/help.h>
+#include <tools/shell/clear.h>
+#include <tools/shell/mousetest.h>
 
 void shell_exec();
