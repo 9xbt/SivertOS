@@ -21,7 +21,7 @@ void *shell_cmd_handlers[] = {
 };
 
 void shell_exec() {
-    printf("> ");
+    printf("$ ");
 
     char input[256];
     kb_get_string(input, 256);

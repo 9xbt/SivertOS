@@ -5,8 +5,10 @@ i8  mouse_byte[3];
 u8  mouse_left_pressed;
 u8  mouse_middle_pressed;
 u8  mouse_right_pressed;
-u32 mouse_x;
-u32 mouse_y;
+i32 mouse_x;
+i32 mouse_y;
+i32 mouse_last_x;
+i32 mouse_last_y;
 
 void mouse_handler(registers* regs) {
     (void)regs;
@@ -18,26 +20,34 @@ void mouse_handler(registers* regs) {
 			switch (mouse_cycle) {
 				case 0:
 					mouse_byte[0] = mouse_in;
-					if (!(mouse_in & 8)) return;
-					++mouse_cycle;
+					//if (!(mouse_in & 8)) return;
+					mouse_cycle++;
 					break;
 				case 1:
 					mouse_byte[1] = mouse_in;
-					++mouse_cycle;
+					mouse_cycle++;
 					break;
 				case 2:
 					mouse_byte[2] = mouse_in;
-					if (mouse_byte[0] & 0x80 || mouse_byte[0] & 0x40) {
-						/* x/y overflow? bad packet! */
-						break;
-					}
 
+					//if (mouse_byte[0] & 0x80 || mouse_byte[0] & 0x40) {
+					//	/* x/y overflow? bad packet! */
+					//	break;
+					//}
+					
+					mouse_last_x = mouse_x;
+					mouse_last_y = mouse_y;
                     mouse_x += mouse_byte[1];
                     mouse_y -= mouse_byte[2];
                     mouse_left_pressed   = mouse_byte[0] & 1;
                     mouse_middle_pressed = mouse_byte[0] & 1;
                     mouse_right_pressed  = mouse_byte[0] & 1;
 					mouse_cycle = 0;
+
+					if (mouse_x < 0) mouse_x = 0;
+					if (mouse_y < 0) mouse_y = 0;
+					if (mouse_x >= vbe_width) mouse_x = vbe_width - 1;
+					if (mouse_y >= vbe_height) mouse_y = vbe_height - 1;
 					break;
 			}
 		}

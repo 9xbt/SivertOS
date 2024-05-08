@@ -12,6 +12,7 @@
         "kb_map.h": "c",
         "kb.h": "c",
         "mouse.h": "c",
-        "help.h": "c"
+        "help.h": "c",
+        "vbe.h": "c"
     }
 }

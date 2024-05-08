@@ -19,15 +19,9 @@
 volatile struct limine_hhdm_request hhdm_request = {
     .id = LIMINE_HHDM_REQUEST,
     .revision = 0
-};
+};\
 
 struct flanterm_context *flanterm_context;
-
-void kernel_idle(void) {
-    for (;;) {
-        __asm__ ("hlt");
-    }
-}
 
 void _start(void) {
     gdt_init();
@@ -56,7 +50,9 @@ void _start(void) {
         shell_exec();
     }
 
-    kernel_idle();
+    for (;;) {
+        asm ("hlt");
+    }
 }
 
 void putchar_(char c) {

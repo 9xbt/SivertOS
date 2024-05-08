@@ -60,7 +60,7 @@ IMAGE_NAME = SivertOS
 all: limine bin/$(KERNEL) iso run
 
 run:
-	qemu-system-x86_64 -d int -M smm=off -M q35 -m 2G -serial stdio -cdrom $(IMAGE_NAME).iso -boot d
+	qemu-system-x86_64 -M smm=off -M q35 -m 2G -serial stdio -cdrom $(IMAGE_NAME).iso -boot d
 
 iso:
 	rm -rf iso_root
