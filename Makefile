@@ -5,7 +5,7 @@ AS = nasm
 
 # C compiler flags
 CFLAGS = -g \
-	-O2 \
+	-Og \
 	-pipe \
 	-Wall \
 	-Wextra \

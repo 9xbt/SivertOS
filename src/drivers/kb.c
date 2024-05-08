@@ -57,26 +57,11 @@ char kb_get_char() {
 }
 
 void kb_get_string(char* buf, size_t n) {
-    printf("kb_get_string called\n");
-
-    memset(buf, NULL, n);
+    memset(buf, 0, n);
     size_t pos = 0;
 
     u8 reading = true;
     do {
-        if (kb_get_char()) {
-            printf("yee\r");
-
-            for (int i = 0; i < 1000000; i++) {
-                asm volatile ("nop");
-            }
-        }
-        else {
-            printf("noo\r");
-        }
-
-        continue;
-
         if (!kb_key_pressed)
             continue;
         kb_key_pressed = false;
@@ -90,7 +75,7 @@ void kb_get_string(char* buf, size_t n) {
                 if (pos == 0)
                     break;
             
-                printf("%c%s", kb_current_char, " \b");
+                printf("%c \b", kb_current_char);
 
                 buf[pos] = 0;
                 pos--;
@@ -106,11 +91,7 @@ void kb_get_string(char* buf, size_t n) {
                 pos++;
                 break;
         }
-
-        printf("kb_get_string loop\n");
     } while (reading);
-
-    printf("kb_get_string ended\n");
 }
 
 void kb_init() {

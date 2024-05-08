@@ -24,7 +24,6 @@ void shell_exec() {
     printf("> ");
 
     char input[256];
-    //memset(input, 0, 256);
     kb_get_string(input, 256);
 
     if (!strcmp(input, "")) {
@@ -45,43 +44,4 @@ void shell_exec() {
     }
 
     printf("%s: command not found\n", input);
-}
-
-void shell_get_string(char* buf, size_t n) {
-    size_t pos = 0;
-
-    u8 c = 0;
-    for (;;) {
-        while (c == 0) {
-            c = kb_get_char();
-        }
-
-        switch(c) {
-            case '\n':
-                printf("%s", "\n");
-                return;
-
-            case '\b':
-                if (pos == 0)
-                    break;
-            
-                printf("%c%s", c, " \b");
-
-                buf[pos] = 0;
-                pos--;
-                break;
-
-            default:
-                if (pos >= n - 1)
-                    break;
-
-                printf("%c", c);
-
-                buf[pos] = c;
-                pos++;
-                break;
-        }
-
-        c = 0;
-    }
 }

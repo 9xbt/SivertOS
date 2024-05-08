@@ -3,6 +3,8 @@
 #include <types.h>
 #include <arch/x86_64/tables/idt/idt.h>
 #include <arch/x86_64/io.h>
+#include <libc/printf.h>
+#include <libc/string.h>
 
 static const u8 kb_map_keys[] = {
     0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',
@@ -33,3 +35,4 @@ static const u8 kb_map_keys_caps[] = {
 
 void kb_init();
 char kb_get_char();
+void kb_get_string(char* buf, size_t c);
