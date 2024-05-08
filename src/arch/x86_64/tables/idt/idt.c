@@ -6,9 +6,11 @@
 #include <arch/x86_64/tables/idt/idt.h>
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/cpu/pic.h>
-#include <kernel/kernel.h>
 #include <flanterm/flanterm.h>
+#include <kernel/kernel.h>
 #include <libc/printf.h>
+#include <libc/string.h>
+#include <video/vbe.h>
 
 __attribute__((aligned(0x10)))
 static idt_entry idt_entries[256];
@@ -93,7 +95,17 @@ void isr_handler(registers* r) {
         return; // Spurious interrupt   
 
     __asm__ volatile("cli");
-    printf("\nisr_handler(): System fault! %s.\n", idt_msg[r->int_no]);
+
+    for (int y = 0; y < vbe_height; y++) {
+        for (int x = 0; x < vbe_width; x++) { 
+            vbe_addr[y * vbe_width + x] = 0xAA;
+        }
+    }
+
+    flanterm_write(flanterm_context, "\033[37;44m\033[H\033[2J", 15);
+    printf("SivertOS 0.0.1\nSystem fault!\n\nRAX=0x%18x   RBX=0x%18x   RCX=0x%18x   RDX=0x%18x\nRSI=0x%18x   RDI=0x%18x   RBP=0x%18x   RSP=0x%18x\nR8 =0x%18x   R9 =0x%18x   R10=0x%18x   R11=0x%18x\nR12=0x%18x   R13=0x%18x   R14=0x%18x   R15=0x%18x\nRIP=0x%18x   RFL=0x%18x\n\nException message: %s.\n\nPlease restart your computer.\n",
+        r->rax, r->rbx, r->rcx, r->rdx, r->rsi, r->rdi, r->rbp, r->rsp, r->r8, r->r9, r->r10, r->r11, r->r12, r->r13, r->r14, r->r15, r->rip, r->rflags, idt_msg[r->int_no]);
+
     for (;;) __asm__ volatile("hlt");
 }
 

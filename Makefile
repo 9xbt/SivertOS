@@ -21,9 +21,7 @@ CFLAGS = -g \
     -mno-mmx \
     -mno-sse \
     -mno-sse2 \
-    -mno-red-zone \
-	-fstack-protector-strong \
-	-mstack-protector-guard-symbol=__stack_chk_guard
+    -mno-red-zone
 	
 # C preprocessor flags
 CPPFLAGS = -I src \

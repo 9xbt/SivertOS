@@ -7,10 +7,13 @@ A small hobbyist 64-bit operating system
 ### Features
 - [X] GDT
 - [X] IDT
-- [ ] PS/2 driver
+- [X] PS/2 driver
     - [X] Keyboard
-    - [ ] Mouse
+    - [X] Mouse
 - [X] Serial driver
-- [X] Formatted printing (printf)
 - [ ] ATA driver
 - [ ] RTC driver
+- [X] Formatted printing (printf)
+- [X] PMM
+- [ ] VMM
+- [ ] Paging

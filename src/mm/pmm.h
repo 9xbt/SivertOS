@@ -1,23 +1,18 @@
-/*
- *  CREDITS: asterd-og on GitHub
- *  https://github.com/asterd-og/QuasarOS/
- */
-
 #pragma once
 
 #include <types.h>
 #include <kernel/kernel.h>
-#include <limine.h>
-#include <mm/bitmap.h>
-#include <arch/x86_64/cpu/serial.h>
-#include <libc/string.h>
 
-#define to_higher_half(ptr) ((void*)(ptr) + hhdm_request.response->offset)
-#define to_physical(ptr) ((void*)(ptr) - hhdm_request.response->offset)
+#define PAGE_SIZE 4096
 
-extern struct limine_memmap_response mmap_data;
+#define DIV_ROUND_UP(x, y) (x + (y - 1)) / y
+#define ALIGN_UP(x, y) DIV_ROUND_UP(x, y) * y
+#define ALIGN_DOWN(x, y) (x / y) * y
 
-void  pmm_init();
-void* pmm_alloc(u64 pages);
-void  pmm_free(void* address, u64 pages);
-u64   pmm_get_free_memory();
+#define HIGHER_HALF(ptr) ((void*)((u64)ptr) + hhdm_offset)
+#define PHYSICAL(ptr) ((void*)((u64)ptr) - hhdm_offset)
+
+void pmm_init();
+
+void* pmm_alloc(size_t n);
+void pmm_free(void* ptr, size_t n);

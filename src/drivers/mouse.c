@@ -1,14 +1,9 @@
 #include <drivers/mouse.h>
 
-u8  mouse_cycle = 0;
-i8  mouse_byte[3];
-u8  mouse_left_pressed;
-u8  mouse_middle_pressed;
-u8  mouse_right_pressed;
-i32 mouse_x;
-i32 mouse_y;
-i32 mouse_last_x;
-i32 mouse_last_y;
+u8 mouse_cycle = 0;
+i8 mouse_byte[3];
+
+mouse_t mouse_state;
 
 void mouse_handler(registers* regs) {
     (void)regs;
@@ -30,24 +25,23 @@ void mouse_handler(registers* regs) {
 				case 2:
 					mouse_byte[2] = mouse_in;
 
-					//if (mouse_byte[0] & 0x80 || mouse_byte[0] & 0x40) {
-					//	/* x/y overflow? bad packet! */
-					//	break;
-					//}
-					
-					mouse_last_x = mouse_x;
-					mouse_last_y = mouse_y;
-                    mouse_x += mouse_byte[1];
-                    mouse_y -= mouse_byte[2];
-                    mouse_left_pressed   = mouse_byte[0] & 1;
-                    mouse_middle_pressed = mouse_byte[0] & 1;
-                    mouse_right_pressed  = mouse_byte[0] & 1;
+					if (mouse_byte[0] & 0x80 || mouse_byte[0] & 0x40) {
+						/* x/y overflow? bad packet! */
+						break;
+					}
+
+					mouse_state.last 		   = mouse_state.current;
+					mouse_state.current.left   = mouse_byte[0] & 1;
+					mouse_state.current.middle = mouse_byte[0] & 2;
+					mouse_state.current.right  = mouse_byte[0] & 4;
+					mouse_state.current.x 	  += mouse_byte[1];
+					mouse_state.current.y 	  -= mouse_byte[2];
 					mouse_cycle = 0;
 
-					if (mouse_x < 0) mouse_x = 0;
-					if (mouse_y < 0) mouse_y = 0;
-					if (mouse_x >= vbe_width) mouse_x = vbe_width - 1;
-					if (mouse_y >= vbe_height) mouse_y = vbe_height - 1;
+					if (mouse_state.current.x < 0) mouse_state.current.x = 0;
+					if (mouse_state.current.y < 0) mouse_state.current.y = 0;
+					if (mouse_state.current.x >= vbe_width) mouse_state.current.x = vbe_width - 1;
+					if (mouse_state.current.y >= vbe_height) mouse_state.current.y = vbe_height - 1;
 					break;
 			}
 		}

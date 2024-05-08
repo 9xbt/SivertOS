@@ -4,99 +4,87 @@
  */
 
 #include <mm/pmm.h>
-#include <libc/panic.h>
+#include <limine.h>
+#include <mm/bitmap.h>
+#include <arch/x86_64/cpu/serial.h>
 
-u8* pmm_bitmap;
-u64 pmm_bitmap_size;
-u64 pmm_bitmap_index;
-u64 pmm_pages;
-u64 pmm_free_memory;
+u8 *pmm_bitmap = NULL;
+u64 pmm_free_pages = 0;
+u64 pmm_used_pages = 0;
+u64 pmm_total_pages = 0;
+u64 pmm_last_page = 0;
 
-static volatile struct limine_memmap_request mmap_request = {
+struct limine_memmap_request memmap_request = {
     .id = LIMINE_MEMMAP_REQUEST,
     .revision = 0
 };
 
-struct limine_memmap_response mmap_data;
+struct limine_memmap_response* pmm_memmap = NULL;
 
 void pmm_init() {
+    pmm_memmap = memmap_request.response;
+    struct limine_memmap_entry** entries = pmm_memmap->entries;
+  
     u64 higher_address = 0;
     u64 top_address = 0;
 
-    struct limine_memmap_response* pmm_mmap_data = mmap_request.response;
-    mmap_data = *pmm_mmap_data;
+    struct limine_memmap_entry* entry;
 
-    for (u64 i = 0; i < pmm_mmap_data->entry_count; i++) {
-        if (pmm_mmap_data->entries[i]->type == LIMINE_MEMMAP_USABLE) {
-            top_address = pmm_mmap_data->entries[i]->base +
-                      pmm_mmap_data->entries[i]->length;
-            
-            if (top_address > higher_address) {
-                higher_address = top_address;
-            }
-        }
+    for (u64 i = 0; i < pmm_memmap->entry_count; i++) {
+        entry = entries[i];
+        if (entry->type != LIMINE_MEMMAP_USABLE)
+        continue;
+        top_address = entry->base + entry->length;
+        if (top_address > higher_address)
+        higher_address = top_address;
     }
 
-    pmm_free_memory = higher_address;
-    pmm_pages = higher_address / page_size;
-    pmm_bitmap_size = align_up(pmm_pages / 8, page_size);
+    pmm_total_pages = higher_address / PAGE_SIZE;
+    u64 bitmap_size = ALIGN_UP(pmm_total_pages / 8, PAGE_SIZE);
 
-    for (u64 i = 0; i < pmm_mmap_data->entry_count; i++) {
-        if (pmm_mmap_data->entries[i]->type == LIMINE_MEMMAP_USABLE) {
-            if (pmm_mmap_data->entries[i]->length >= pmm_bitmap_size) {
-                pmm_bitmap = (u8*)to_higher_half(pmm_mmap_data->entries[i]->base);
-                memset(pmm_bitmap, 0xFF, pmm_bitmap_size);
-                pmm_mmap_data->entries[i]->base += pmm_bitmap_size;
-                pmm_mmap_data->entries[i]->length -= pmm_bitmap_size;
-                break;
-            }
-        }
+    for (u64 i = 0; i < pmm_memmap->entry_count; i++) {
+        entry = entries[i];
+        if (entry->type != LIMINE_MEMMAP_USABLE || entry->length < bitmap_size) continue;
+        pmm_bitmap = (u8*)HIGHER_HALF(entry->base);
+        memset(pmm_bitmap, 0xFF, bitmap_size);
+        entry->base += bitmap_size;
+        entry->length -= bitmap_size;
+        break;
     }
 
-    for (u64 i = 0; i < pmm_mmap_data->entry_count; ++i) {
-        if (pmm_mmap_data->entries[i]->type == LIMINE_MEMMAP_USABLE) {
-            for (u64 j = 0; j < pmm_mmap_data->entries[i]->length; j += page_size) {
-                bitmap_clear(pmm_bitmap, (pmm_mmap_data->entries[i]->base + j) / page_size);
-            }
-        }
+    for (u64 i = 0; i < pmm_memmap->entry_count; i++) {
+        entry = entries[i];
+        if (entry->type != LIMINE_MEMMAP_USABLE) continue;
+        for (u64 j = 0; j < entry->length; j += PAGE_SIZE)
+        bitmap_clear(pmm_bitmap, (entry->base + j) / PAGE_SIZE);
     }
+
+    serial_printf("pmm_init(): PMM Initialised at %lx with bitmap size of %ld.\n", (u64)pmm_bitmap, bitmap_size);
 }
 
-void* pmm_alloc(u64 pages) {
-    u64 pages_free = 0;
-
-    for (;pmm_bitmap_index < pmm_pages; pmm_bitmap_index++) {
-        if (pmm_bitmap_index > pmm_pages) {
-            panic("pmm_alloc: Out of memory.\n");
-            return (void*)-1;
-        } else if (pages_free == pages) {
-            break;
-        } else if (bitmap_get(pmm_bitmap, pmm_bitmap_index) == 0) {
-            pages_free++;
-        } else {
-            pages_free = 0;
+void* pmm_alloc(size_t n) {
+    u64 pages = 0;
+    while (pages < n) {
+        if (pmm_last_page == pmm_total_pages) {
+            serial_printf("pmm_alloc(): Ran out of memory.\n");
+            return NULL;
+        }
+        if (bitmap_get(pmm_bitmap, pmm_last_page + pages) == 0)
+            pages++;
+        else {
+            pmm_last_page++;
+            pages = 0;
         }
     }
-    
-    for (u64 i = 0; i < pages; i++) {
-       bitmap_set(pmm_bitmap, (pmm_bitmap_index - pages_free) + i);
-    }
-
-    return (void*)((pmm_bitmap_index - pages_free) * page_size);
+    for (u64 i = 0; i < n; i++)
+        bitmap_set(pmm_bitmap, pmm_last_page + i);
+    pmm_last_page += pages;
+    return (void*)((pmm_last_page - n) * PAGE_SIZE); // Return the start of the pages
 }
 
-void pmm_free(void* address, u64 pages) {
-    u64 page_index = (u64)address;
-    page_index /= page_size;
-
-    for (u64 i = 0; i < pages; i++) {
-        bitmap_clear(pmm_bitmap, page_index + i);
-    }
-
-    pmm_bitmap_index = page_index;
-    return;
-}
-
-u64 pmm_get_free_memory() {
-    return pmm_free_memory;
+void pmm_free(void* ptr, size_t n) {
+    u64 idx = (u64)ptr / PAGE_SIZE;
+    for (u64 i = 0; i < n; i++)
+        bitmap_clear(pmm_bitmap, idx + i);
+    pmm_last_page = idx;
 }
