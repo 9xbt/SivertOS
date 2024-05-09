@@ -48,6 +48,8 @@ void _start(void) {
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
 
+    panic("TEST_PANIC");
+
     for (;;) {
         shell_exec();
     }
