@@ -1,23 +1,21 @@
 #include <tools/shell.h>
 
-const int shell_cmds_len = 3;
-
 const char *shell_cmds[] = {
     "help",
     "clear",
-    "mousetest"
+    "paint"
 };
 
 const char *shell_cmd_descriptions[] = {
     "Shows this page",
     "Clears the screen",
-    "Test command for the mouse driver"
+    "Simple paint program to test the mouse driver"
 };
 
 void *shell_cmd_handlers[] = {
     shell_cmd_help,
     shell_cmd_clear,
-    shell_cmd_mousetest
+    shell_cmd_paint
 };
 
 void shell_exec() {
@@ -31,7 +29,7 @@ void shell_exec() {
         return;
     }
 
-    for (int i = 0; i < shell_cmds_len; i++) {
+    for (int i = 0; i < 3; i++) {
         if (!strcmp(input, shell_cmds[i])) {
             void(*handler)(int, char**);
 

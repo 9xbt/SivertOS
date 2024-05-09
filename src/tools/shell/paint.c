@@ -1,7 +1,10 @@
-#include <tools/shell/mousetest.h>
+#include <tools/shell/paint.h>
 
-void shell_cmd_mousetest(int argc, char** argv) {
+void shell_cmd_paint(int argc, char** argv) {
     memset(vbe_addr, 0, vbe_pitch * vbe_height);
+
+    flanterm_write(flanterm_context, "\033[H\033[?25l", 9);
+    printf("Simple paint program - Press any key to exit");
 
     while (kb_get_char() == 0) {
         asm ("cli");
@@ -16,4 +19,7 @@ void shell_cmd_mousetest(int argc, char** argv) {
 
         asm ("sti");
     }
+
+    memset(vbe_addr, 0, vbe_pitch * vbe_height);
+    flanterm_write(flanterm_context, "\033[H\033[2J\033[?25h", 13);
 }

@@ -13,6 +13,8 @@
         "kb.h": "c",
         "mouse.h": "c",
         "help.h": "c",
-        "vbe.h": "c"
+        "vbe.h": "c",
+        "canvas.h": "c",
+        "paint.h": "c"
     }
 }
