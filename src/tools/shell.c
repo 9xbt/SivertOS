@@ -3,18 +3,24 @@
 const char *shell_cmds[] = {
     "help",
     "clear",
+    "date",
+    "uptime",
     "paint"
 };
 
 const char *shell_cmd_descriptions[] = {
     "Shows this page",
     "Clears the screen",
+    "Displays the date and time",
+    "Displays how long the system has been running",
     "Simple paint program to test the mouse driver"
 };
 
 void *shell_cmd_handlers[] = {
     shell_cmd_help,
     shell_cmd_clear,
+    shell_cmd_date,
+    shell_cmd_uptime,
     shell_cmd_paint
 };
 
@@ -29,7 +35,7 @@ void shell_exec() {
         return;
     }
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
         if (!strcmp(input, shell_cmds[i])) {
             void(*handler)(int, char**);
 

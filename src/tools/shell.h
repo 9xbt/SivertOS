@@ -6,6 +6,8 @@
 #include <libc/string.h>
 #include <tools/shell/help.h>
 #include <tools/shell/clear.h>
+#include <tools/shell/date.h>
+#include <tools/shell/uptime.h>
 #include <tools/shell/paint.h>
 
 extern const char *shell_cmds[];

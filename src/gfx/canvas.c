@@ -1,9 +1,5 @@
 #include <gfx/canvas.h>
 
-i32 abs(i32 i) {
-    return i < 0 ? -i : i;
-}
-
 void cv_draw_line(u32* fb, u32 fb_width, u32 x1, u32 y1, u32 x2, u32 y2, u32 color) {
     int dx = abs(x2 - x1);
     int sx = x1 < x2 ? 1 : -1;

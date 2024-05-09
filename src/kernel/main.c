@@ -28,19 +28,7 @@ void _start(void) {
     hhdm_offset = hhdm_request.response->offset;
 
     gdt_init();
-    serial_init();
     vbe_init();
-    
-    __asm__ ("cli");
-    idt_init();
-    pic_remap();
-    __asm__ ("sti");
-
-    kb_init();
-    mouse_init();
-
-    pmm_init();
-    vmm_init();
 
     flanterm_context = flanterm_fb_simple_init(
         vbe_addr, vbe_width, vbe_height, vbe_pitch
@@ -49,13 +37,24 @@ void _start(void) {
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
 
+    serial_init();
+    
+    idt_init();
+    pic_remap();
+
+    kb_init();
+    mouse_init();
+
+    pmm_init();
+    vmm_init();
+
     for (;;) {
         shell_exec();
     }
 
-    for (;;) {
-        asm ("hlt");
-    }
+    //for (;;) {
+    //    asm ("hlt");
+    //}
 }
 
 void putchar_(char c) {

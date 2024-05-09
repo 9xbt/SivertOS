@@ -96,4 +96,5 @@ void kb_get_string(char* buf, size_t n) {
 
 void kb_init() {
     irq_register(1, kb_handler);
+    serial_send("kb_init(): keyboard driver initialized\n");
 }

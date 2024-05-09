@@ -55,6 +55,8 @@ static const char* idt_msg[32] = {
 };
 
 void idt_init() {
+    asm volatile ("cli");
+
     for (u16 vec = 0; vec < 48; vec++)
         idt_set_entry(vec, idt_int_table[vec]);
 
@@ -63,13 +65,13 @@ void idt_init() {
         .offset = (u64)idt_entries
     };
 
-    __asm__ volatile ("lidt %0" : : "m"(idt_data) : "memory");
-    __asm__ volatile ("sti");
+    asm volatile ("lidt %0" : : "m"(idt_data) : "memory");
+    asm volatile ("sti");
 }
 
 void idt_reinit() {
-    __asm__ ("lidt %0" : : "m"(idt_data) : "memory");
-    __asm__ ("sti");
+    asm ("lidt %0" : : "m"(idt_data) : "memory");
+    asm ("sti");
 }
 
 void idt_set_entry(u8 vec, void* isr) {
