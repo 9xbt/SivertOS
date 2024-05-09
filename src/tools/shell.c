@@ -21,7 +21,8 @@ void *shell_cmd_handlers[] = {
 };
 
 void shell_exec() {
-    printf("$ ");
+    const char prompt[] = "\033[91msivert\033[94m # \033[0m";
+    flanterm_write(flanterm_context, prompt, sizeof(prompt));
 
     char input[256];
     kb_get_string(input, 256);
