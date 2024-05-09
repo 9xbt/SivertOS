@@ -8,6 +8,7 @@
 #include <drivers/kb.h>
 #include <drivers/mouse.h>
 #include <mm/pmm.h>
+#include <mm/vmm.h>
 #include <flanterm/flanterm.h>
 #include <flanterm/backends/fb.h>
 #include <libc/panic.h>
@@ -39,7 +40,7 @@ void _start(void) {
     mouse_init();
 
     pmm_init();
-    //vmm_init();
+    vmm_init();
 
     flanterm_context = flanterm_fb_simple_init(
         vbe_addr, vbe_width, vbe_height, vbe_pitch
@@ -47,8 +48,6 @@ void _start(void) {
 
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
     flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
-
-    panic("TEST_PANIC");
 
     for (;;) {
         shell_exec();

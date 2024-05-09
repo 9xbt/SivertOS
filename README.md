@@ -11,9 +11,10 @@ A small hobbyist 64-bit operating system
     - [X] Keyboard
     - [X] Mouse
 - [X] Serial driver
-- [ ] ATA driver
 - [ ] RTC driver
 - [X] Formatted printing (printf)
 - [X] PMM
-- [ ] VMM
+- [X] VMM
+- [ ] Heap
 - [ ] Paging
+- [ ] IDE/ATA driver
