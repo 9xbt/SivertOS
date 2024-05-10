@@ -2,7 +2,7 @@
 A small hobbyist 64-bit operating system
 
 > [!NOTE]
-> SivertOS is in a very early stage of development, so it's not recommended for use on real hardware.
+> SivertOS is in a very early stage of development, so it's not ready to be used on real hardware, though you can still give it a try!
 
 ## Features
 
