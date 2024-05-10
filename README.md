@@ -16,5 +16,4 @@ A small hobbyist 64-bit operating system
 - [X] PMM
 - [X] VMM
 - [X] Heap
-- [ ] Paging
 - [ ] IDE/ATA driver
