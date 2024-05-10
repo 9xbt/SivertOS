@@ -1,5 +1,5 @@
 # SivertOS
-A small hobbyist 64-bit operating system
+The radioactive x86-64 operating system
 
 > [!NOTE]
 > SivertOS is in a very early stage of development, so it's not ready to be used on real hardware, though you can still give it a try!
