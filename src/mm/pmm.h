@@ -2,6 +2,7 @@
 
 #include <types.h>
 #include <kernel/kernel.h>
+#include <libc/string.h>
 
 #define PAGE_SIZE 4096
 

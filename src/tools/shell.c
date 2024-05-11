@@ -29,7 +29,7 @@ void shell_exec() {
     flanterm_write(flanterm_context, prompt, sizeof(prompt));
 
     char input[256];
-    kb_get_string(input, 256);
+    kb_get_string(input, sizeof(input));
 
     if (!strcmp(input, "")) {
         return;
