@@ -52,9 +52,9 @@ void _start(void) {
         shell_exec();
     }
 
-    //for (;;) {
-    //    asm ("hlt");
-    //}
+    /*for (;;) {
+        asm ("hlt");
+    }*/
 }
 
 void putchar_(char c) {

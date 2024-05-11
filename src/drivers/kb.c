@@ -58,9 +58,9 @@ char kb_get_char() {
 
 void kb_get_string(char* buf, size_t n) {
     memset(buf, 0, n);
-    size_t pos = 0;
+    int pos = 0;
 
-    u8 reading = true;
+    bool reading = true;
     do {
         if (!kb_key_pressed)
             continue;
@@ -72,7 +72,7 @@ void kb_get_string(char* buf, size_t n) {
                 return;
 
             case '\b':
-                if (pos == 0)
+                if (pos <= 0)
                     break;
             
                 printf("%c \b", kb_current_char);
@@ -90,6 +90,10 @@ void kb_get_string(char* buf, size_t n) {
                 buf[pos] = kb_current_char;
                 pos++;
                 break;
+        }
+
+        if (pos < 0) {
+            pos = 0;
         }
     } while (reading);
 }
