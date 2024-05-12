@@ -13,8 +13,8 @@
 #include <flanterm/backends/fb.h>
 #include <libc/panic.h>
 #include <libc/printf.h>
-#include <libc/malloc.h>
-#include <tools/shell.h>
+#include <libc/alloc.h>
+#include <apps/shell.h>
 
 volatile struct limine_hhdm_request hhdm_request = {
     .id = LIMINE_HHDM_REQUEST,
@@ -49,7 +49,7 @@ void _start(void) {
     pmm_init();
     vmm_init();
 
-    malloc_init();
+    kheap_init(PAGE_SIZE * 393216); /* 1.5 GB */
 
     for (;;) {
         shell_exec();

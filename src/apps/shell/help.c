@@ -1,4 +1,4 @@
-#include <tools/shell/help.h>
+#include <apps/shell/help.h>
 
 void shell_cmd_help(int argc, char** argv) {
     for (int i = 0; i < 5; i++) {

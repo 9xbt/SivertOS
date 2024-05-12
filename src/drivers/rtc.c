@@ -57,7 +57,7 @@ u64 rtc_day_of_week() {
 
 u64 rtc_hour() {
     outb(RTC_PORT, 0x04);
-    return bcd_to_bin(inb(RTC_PORT_REPLY));
+    return bcd_to_bin(inb(RTC_PORT_REPLY)) + 2;
 }
 
 u64 rtc_minute() {
@@ -74,12 +74,13 @@ u64 rtc_time() {
     return rtc_hour() * 3600 + rtc_minute() * 60 + rtc_second();
 }
 
-u64 epoch() {
-    u64 seconds = rtc_second(), minutes = rtc_minute(), hours = rtc_hour(), days = rtc_day(), months = rtc_month(), years = rtc_year(), centuries = rtc_century();
+uint64_t epoch()
+{
+    uint64_t seconds = rtc_second(), minutes = rtc_minute(), hours = rtc_hour() - 2, days = rtc_day() + 1, months = rtc_month(), years = rtc_year(), centuries = rtc_century();
 
-    u64 jdn_current = jdn(days, months, centuries * 100 + years);
-    u64 jdn_1970 = jdn(1, 1, 1970);
-    u64 diff = jdn_current - jdn_1970;
+    uint64_t jdn_current = jdn(days, months, centuries * 100 + years);
+    uint64_t jdn_1970 = jdn(1, 1, 1970);
+    uint64_t diff = jdn_current - jdn_1970;
 
     return (diff * (60 * 60 * 24)) + hours * 3600 + minutes * 60 + seconds;
 }

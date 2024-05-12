@@ -1,4 +1,4 @@
-#include <tools/shell.h>
+#include <apps/shell.h>
 
 const char *shell_cmds[] = {
     "help",

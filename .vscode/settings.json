@@ -15,6 +15,11 @@
         "help.h": "c",
         "vbe.h": "c",
         "canvas.h": "c",
-        "paint.h": "c"
+        "paint.h": "c",
+        "types.h": "c",
+        "stdio.h": "c",
+        "shell.h": "c",
+        "clear.h": "c",
+        "uptime.h": "c"
     }
 }

@@ -1,4 +1,4 @@
-#include <tools/shell/paint.h>
+#include <apps/shell/paint.h>
 
 void shell_cmd_paint(int argc, char** argv) {
     memset(vbe_addr, 0, vbe_pitch * vbe_height);
