@@ -44,6 +44,14 @@ NASMFLAGS = -F dwarf \
 	-Wall \
     -f elf64
 
+# QEMU flags
+QEMUFLAGS = -M smm=off \
+	-M q35 \
+	-m 2G \
+	-serial stdio \
+	-cdrom $(IMAGE_NAME).iso \
+	-boot d
+
 # Source files
 CFILES := $(shell cd src && find -L * -type f -name '*.c')
 ASFILES := $(shell cd src && find -L * -type f -name '*.S')
@@ -58,7 +66,7 @@ IMAGE_NAME = SivertOS
 all: limine bin/$(KERNEL) iso run
 
 run:
-	qemu-system-x86_64 -M smm=off -M q35 -m 2G -serial stdio -cdrom $(IMAGE_NAME).iso -boot d
+	qemu-system-x86_64 $(QEMUFLAGS)
 
 iso:
 	rm -rf iso_root

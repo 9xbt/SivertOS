@@ -66,8 +66,7 @@ void* pmm_alloc(size_t n) {
     u64 pages = 0;
     while (pages < n) {
         if (pmm_last_page == pmm_total_pages) {
-            serial_printf("pmm_alloc(): Ran out of memory.\n");
-            return NULL;
+            panic("OUT_OF_MEMORY");
         }
         if (bitmap_get(pmm_bitmap, pmm_last_page + pages) == 0)
             pages++;

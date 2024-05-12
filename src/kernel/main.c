@@ -13,6 +13,7 @@
 #include <flanterm/backends/fb.h>
 #include <libc/panic.h>
 #include <libc/printf.h>
+#include <libc/malloc.h>
 #include <tools/shell.h>
 
 volatile struct limine_hhdm_request hhdm_request = {
@@ -47,6 +48,8 @@ void _start(void) {
 
     pmm_init();
     vmm_init();
+
+    malloc_init();
 
     for (;;) {
         shell_exec();

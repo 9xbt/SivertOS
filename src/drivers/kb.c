@@ -11,22 +11,22 @@ void kb_handler(registers* regs) {
     u8 key = inb(0x60);
 
     if (!(key & 0x80)) {
-        // Key was pressed
+        /* Key was pressed */
         switch (key) {
             case 0x2a:
-                // Left shift
+                /* Left shift */
                 kb_shift = true;
                 break;
             case 0x36:
-                // Right shift
+                /* Right shift */
                 kb_shift = true;
                 break;
             case 0x3a:
-                // Caps
+                /* Caps */ 
                 kb_caps = !kb_caps;
                 break;
             default:
-                // Letter(?)
+                /* Letter(?) */
                 kb_key_pressed = true;
                 if (kb_shift) kb_current_char = kb_map_keys_shift[key];
                 else if (kb_caps) kb_current_char = kb_map_keys_caps[key];
@@ -36,11 +36,11 @@ void kb_handler(registers* regs) {
     } else {
         switch (key) {
             case 0xaa:
-                // Left shift released
+                /* Left shift released */
                 kb_shift = false;
                 break;
             case 0xb6:
-                // Right shift released
+                /* Right shift released */
                 kb_shift = false;
                 break;
         }
@@ -67,13 +67,17 @@ void kb_get_string(char* buf, size_t n) {
         kb_key_pressed = false;
 
         switch(kb_current_char) {
+            case '\0':
+                break;
+
             case '\n':
-                printf("%s", "\n");
+                printf("\n");
                 return;
 
             case '\b':
-                if (pos <= 0)
+                if (pos <= 0) {
                     break;
+                }
             
                 printf("%c \b", kb_current_char);
 
@@ -90,10 +94,6 @@ void kb_get_string(char* buf, size_t n) {
                 buf[pos] = kb_current_char;
                 pos++;
                 break;
-        }
-
-        if (pos < 0) {
-            pos = 0;
         }
     } while (reading);
 }
