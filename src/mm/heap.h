@@ -15,7 +15,7 @@ typedef struct heap_pool {
 } heap_block;
 
 typedef struct {
-    heap_pool* block_head;
+    heap_block* block_head;
 } heap;
 
 heap* heap_create();
