@@ -13,4 +13,5 @@ void* kmalloc(u64 size) {
 }
 
 void kfree(void* ptr) {
+    heap_free(kernel_heap, PHYSICAL(ptr));
 }

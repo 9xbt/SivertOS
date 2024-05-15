@@ -58,8 +58,6 @@ void pmm_init() {
         for (u64 j = 0; j < entry->length; j += PAGE_SIZE)
         bitmap_clear(pmm_bitmap, (entry->base + j) / PAGE_SIZE);
     }
-
-    serial_printf("pmm_init(): PMM Initialised at %lx with bitmap size of %ld.\n", (u64)pmm_bitmap, bitmap_size);
 }
 
 void* pmm_alloc(size_t n) {

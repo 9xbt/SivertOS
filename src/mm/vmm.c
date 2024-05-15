@@ -36,7 +36,6 @@ void vmm_init() {
     }
 
     vmm_switch_pm(vmm_kernel_pm);
-    serial_printf("vmm_init(): VMM initialized. Kernel's page map located at %lx.\n", (u64)vmm_kernel_pm);
 }
 
 uptr* vmm_get_next_lvl(uptr* lvl, uptr entry, u64 flags, bool alloc) {

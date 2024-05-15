@@ -4,28 +4,20 @@
 #include <mm/pmm.h>
 #include <mm/vmm.h>
 
-#define HEAP_MAGIC 0xdeadbeef // Dead beef
+#define HEAP_MAGIC 0xdeadbeef
 
 typedef struct heap_pool {
     struct heap_pool* next;
     struct heap_pool* prev;
-    u8* pool;
-    uptr last_ptr;
-    u64 free_size;
-    u16 id;
+    u8 state;
+    u32 magic;
     u64 size;
-    bool used; // Only true if it has reached maximum capacity
-}   heap_pool;
+} heap_block;
 
 typedef struct {
-    heap_pool* pool_head;
-    u64 size;
-    u64 id;
-    u16 pool_count;
-} heap_ctrl;
+    heap_pool* block_head;
+} heap;
 
-heap_ctrl* heap_create(u64 size);
-
-void* heap_alloc(heap_ctrl* h, u64 size);
-void  heap_free(heap_ctrl* h, void* ptr);
-void  heap_resize(heap_ctrl* h, u64 new_size);
+heap* heap_create();
+void* heap_alloc(heap* h, u64 size);
+void  heap_free (heap* h, void* ptr);
