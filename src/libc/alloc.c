@@ -1,6 +1,6 @@
 #include <libc/alloc.h>
 
-heap_ctrl* kernel_heap;
+heap* kernel_heap;
 
 void kheap_init(u64 initial_size) {
     kernel_heap = heap_create(initial_size);
