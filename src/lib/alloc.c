@@ -1,4 +1,4 @@
-#include <libc/alloc.h>
+#include <lib/alloc.h>
 
 heap* kernel_heap;
 

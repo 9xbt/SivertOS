@@ -40,10 +40,10 @@
 // Define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H=1 ...) to include the
 // printf_config.h header file
 #if PRINTF_INCLUDE_CONFIG_H
-#include <libc/printf_config.h>
+#include <lib/printf_config.h>
 #endif
 
-#include <libc/printf.h>
+#include <lib/printf.h>
 
 #ifdef __cplusplus
 #include <cstdint>

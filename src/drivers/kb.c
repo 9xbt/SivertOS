@@ -58,7 +58,7 @@ char kb_get_char() {
 
 void kb_get_string(char* buf, size_t n) {
     memset(buf, 0, n);
-    int pos = 0;
+    size_t pos = 0;
 
     bool reading = true;
     do {

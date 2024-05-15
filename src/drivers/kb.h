@@ -4,8 +4,8 @@
 #include <arch/x86_64/tables/idt/idt.h>
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/io.h>
-#include <libc/printf.h>
-#include <libc/string.h>
+#include <lib/printf.h>
+#include <lib/libc.h>
 
 static const u8 kb_map_keys[] = {
     0, 27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b',

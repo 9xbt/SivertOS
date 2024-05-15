@@ -1,11 +1,11 @@
-#include <libc/panic.h>
+#include <lib/panic.h>
 
 void panic(const char *format, ...) {
     asm volatile ("cli");
     
-    for (int y = 0; y < vbe_height; y++) {
-        for (int x = 0; x < vbe_width; x++) { 
-            vbe_addr[y * vbe_width + x] = 0xAA;
+    for (u64 y = 0; y < framebuffer->height; y++) {
+        for (u64 x = 0; x < framebuffer->width; x++) { 
+            fb_addr[y * framebuffer->width + x] = 0xAA;
         }
     }
 

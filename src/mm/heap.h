@@ -19,5 +19,6 @@ typedef struct {
 } heap;
 
 heap* heap_create();
+
 void* heap_alloc(heap* h, u64 size);
 void  heap_free (heap* h, void* ptr);

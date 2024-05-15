@@ -2,6 +2,6 @@
 
 #include <types.h>
 #include <drivers/rtc.h>
-#include <libc/printf.h>
+#include <lib/printf.h>
 
 void shell_cmd_date(int argc, char** argv);

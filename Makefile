@@ -4,7 +4,8 @@ LD = ld
 AS = nasm
 
 # C compiler flags
-CFLAGS = -g \
+CFLAGS = \
+	-g \
 	-Og \
 	-pipe \
 	-Wall \
@@ -24,12 +25,14 @@ CFLAGS = -g \
     -mno-red-zone
 	
 # C preprocessor flags
-CPPFLAGS = -I src \
+CPPFLAGS = \
+	-I src \
 	-MMD \
 	-MP
 
 # Linker flags
-LDFLAGS = -m elf_x86_64 \
+LDFLAGS = \
+	-m elf_x86_64 \
     -nostdlib \
     -static \
     -pie \
@@ -39,9 +42,10 @@ LDFLAGS = -m elf_x86_64 \
     -T conf/linker.ld
 
 # NASM flags
-NASMFLAGS = -F dwarf \
-	-g \
+NASMFLAGS = \
 	-Wall \
+	-w-reloc-rel-dword \
+	-w-reloc-abs-qword \
     -f elf64
 
 # QEMU flags
@@ -63,10 +67,15 @@ OBJ := $(addprefix obj/,$(CFILES:.c=.c.o) $(ASFILES:.S=.S.o) $(NASMFILES:.asm=.a
 KERNEL = SivertOS
 IMAGE_NAME = SivertOS
 
-all: limine bin/$(KERNEL) iso run
+all: clean limine bin/$(KERNEL) iso run
+
+all-kvm: limine bin/$(KERNEL) iso run-kvm
 
 run:
 	qemu-system-x86_64 $(QEMUFLAGS)
+
+run-kvm:
+	qemu-system-x86_64 $(QEMUFLAGS) -accel kvm
 
 iso:
 	rm -rf iso_root

@@ -40,8 +40,8 @@ void mouse_handler(registers* regs) {
 
 					if (mouse_state.current.x < 0) mouse_state.current.x = 0;
 					if (mouse_state.current.y < 0) mouse_state.current.y = 0;
-					if (mouse_state.current.x >= vbe_width) mouse_state.current.x = vbe_width - 1;
-					if (mouse_state.current.y >= vbe_height) mouse_state.current.y = vbe_height - 1;
+					if (mouse_state.current.x >= (i32)framebuffer->width) mouse_state.current.x = framebuffer->width - 1;
+					if (mouse_state.current.y >= (i32)framebuffer->height) mouse_state.current.y = framebuffer->height - 1;
 					break;
 			}
 		}

@@ -4,7 +4,7 @@
 #include <limine.h>
 #include <arch/x86_64/io.h>
 #include <kernel/kernel.h>
-#include <libc/math.h>
+#include <lib/math.h>
 
 #define RTC_PORT 0x70
 #define RTC_PORT_REPLY 0x71

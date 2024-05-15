@@ -1,6 +1,6 @@
 #pragma once
 
-#include <libc/printf.h>
+#include <lib/printf.h>
 #include <drivers/kb.h>
 #include <drivers/mouse.h>
 #include <kernel/kernel.h>

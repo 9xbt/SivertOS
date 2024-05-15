@@ -2,8 +2,8 @@
 
 #include <types.h>
 #include <kernel/kernel.h>
-#include <libc/string.h>
-#include <libc/panic.h>
+#include <lib/libc.h>
+#include <lib/panic.h>
 
 #define PAGE_SIZE 4096
 

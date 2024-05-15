@@ -1,5 +1,5 @@
 #include <mm/heap.h>
-#include <libc/string.h>
+#include <lib/libc.h>
 #include <arch/x86_64/cpu/serial.h>
 
 heap* heap_create() {
@@ -27,6 +27,8 @@ void* heap_alloc(heap* h, u64 size) {
 }
 
 void heap_free(heap* h, void* ptr) {
+    (void)(h);
+
     heap_block* block = (heap_block*)(ptr - sizeof(heap_block));
     if (block->magic != HEAP_MAGIC) {
         serial_printf("heap_free(): Invalid magic at pointer %lx.\n", ptr);

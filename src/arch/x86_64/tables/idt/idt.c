@@ -8,9 +8,8 @@
 #include <arch/x86_64/cpu/pic.h>
 #include <flanterm/flanterm.h>
 #include <kernel/kernel.h>
-#include <libc/printf.h>
-#include <libc/string.h>
-#include <video/vbe.h>
+#include <lib/printf.h>
+#include <lib/libc.h>
 
 __attribute__((aligned(0x10)))
 static idt_entry idt_entries[256];
@@ -98,9 +97,9 @@ void isr_handler(registers* r) {
 
     asm volatile("cli");
 
-    for (int y = 0; y < vbe_height; y++) {
-        for (int x = 0; x < vbe_width; x++) { 
-            vbe_addr[y * vbe_width + x] = 0xAA;
+    for (u64 y = 0; y < framebuffer->height; y++) {
+        for (u64 x = 0; x < framebuffer->width; x++) { 
+            fb_addr[y * framebuffer->width + x] = 0xAA;
         }
     }
 
@@ -113,11 +112,11 @@ void isr_handler(registers* r) {
         "RIP=0x%18x   RFL=0x%18x\n\n"
         "Error code: %s\n\nPlease restart your computer.",
         
-        r->rax, r->rbx, r->rcx, r->rdx,
-        r->rsi, r->rdi, r->rbp, r->rsp,
-        r->r8,  r->r9,  r->r10, r->r11,
-        r->r12, r->r13, r->r14, r->r15,
-        r->rip, r->rflags, idt_msg[r->int_no]);
+        (u32)r->rax, (u32)r->rbx, (u32)r->rcx, (u32)r->rdx,
+        (u32)r->rsi, (u32)r->rdi, (u32)r->rbp, (u32)r->rsp,
+        (u32)r->r8,  (u32)r->r9,  (u32)r->r10, (u32)r->r11,
+        (u32)r->r12, (u32)r->r13, (u32)r->r14, (u32)r->r15,
+        (u32)r->rip, (u32)r->rflags, idt_msg[r->int_no]);
 
     for (;;) asm volatile("hlt");
 }

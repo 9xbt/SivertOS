@@ -1,6 +1,6 @@
 #include <mm/vmm.h>
 #include <limine.h>
-#include <libc/string.h>
+#include <lib/libc.h>
 #include <arch/x86_64/cpu/serial.h>
 
 struct limine_kernel_address_request kernel_address_request = {

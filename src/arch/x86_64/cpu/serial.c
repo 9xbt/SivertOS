@@ -1,7 +1,7 @@
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/io.h>
-#include <libc/string.h>
-#include <libc/printf.h>
+#include <lib/libc.h>
+#include <lib/printf.h>
 
 int serial_init() {
     outb(COM1 + 1, 0);

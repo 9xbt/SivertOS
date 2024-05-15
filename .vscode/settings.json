@@ -20,6 +20,9 @@
         "stdio.h": "c",
         "shell.h": "c",
         "clear.h": "c",
-        "uptime.h": "c"
+        "uptime.h": "c",
+        "libc.h": "c",
+        "date.h": "c",
+        "panic.h": "c"
     }
 }

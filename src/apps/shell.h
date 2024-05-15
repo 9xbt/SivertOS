@@ -2,8 +2,8 @@
 
 #include <types.h>
 #include <drivers/kb.h>
-#include <libc/printf.h>
-#include <libc/string.h>
+#include <lib/printf.h>
+#include <lib/libc.h>
 #include <apps/shell/help.h>
 #include <apps/shell/clear.h>
 #include <apps/shell/date.h>

@@ -79,7 +79,7 @@ uint64_t epoch()
     uint64_t seconds = rtc_second(), minutes = rtc_minute(), hours = rtc_hour() - 2, days = rtc_day() + 1, months = rtc_month(), years = rtc_year(), centuries = rtc_century();
 
     uint64_t jdn_current = jdn(days, months, centuries * 100 + years);
-    uint64_t jdn_1970 = jdn(1, 1, 1970);
+    uint64_t jdn_1970 = jdn(1, 1, (u16)1970);
     uint64_t diff = jdn_current - jdn_1970;
 
     return (diff * (60 * 60 * 24)) + hours * 3600 + minutes * 60 + seconds;
