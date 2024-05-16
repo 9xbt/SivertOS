@@ -23,6 +23,7 @@
         "uptime.h": "c",
         "libc.h": "c",
         "date.h": "c",
-        "panic.h": "c"
+        "panic.h": "c",
+        "alloc.h": "c"
     }
 }

@@ -101,5 +101,4 @@ void mouse_init() {
     asm volatile ("sti");
 
     irq_register(12, mouse_handler);
-    serial_send("kb_init(): mouse driver initialized\n");
 }

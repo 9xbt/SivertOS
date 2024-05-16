@@ -8,42 +8,48 @@ u8 kb_shift = false;
 void kb_handler(registers* regs) {
     (void)regs;
 
-    u8 key = inb(0x60);
+    if (inb(0x64) & 1) {
+        u8 key = inb(0x60);
 
-    if (!(key & 0x80)) {
-        /* Key was pressed */
-        switch (key) {
-            case 0x2a:
-                /* Left shift */
-                kb_shift = true;
-                break;
-            case 0x36:
-                /* Right shift */
-                kb_shift = true;
-                break;
-            case 0x3a:
-                /* Caps */ 
-                kb_caps = !kb_caps;
-                break;
-            default:
-                /* Letter(?) */
-                kb_key_pressed = true;
-                if (kb_shift) kb_current_char = kb_map_keys_shift[key];
-                else if (kb_caps) kb_current_char = kb_map_keys_caps[key];
-                else kb_current_char = kb_map_keys[key];
-                break;
+        if (!(key & 0x80)) {
+            /* Key was pressed */
+            switch (key) {
+                case 0x2a:
+                    /* Left shift */
+                    kb_shift = true;
+                    break;
+                case 0x36:
+                    /* Right shift */
+                    kb_shift = true;
+                    break;
+                case 0x3a:
+                    /* Caps */ 
+                    kb_caps = !kb_caps;
+                    break;
+                default:
+                    /* Letter(?) */
+                    kb_key_pressed = true;
+                    if (kb_shift) kb_current_char = kb_map_keys_shift[key];
+                    else if (kb_caps) kb_current_char = kb_map_keys_caps[key];
+                    else kb_current_char = kb_map_keys[key];
+                    break;
+            }
+        } else {
+            switch (key) {
+                case 0xaa:
+                    /* Left shift released */
+                    kb_shift = false;
+                    break;
+                case 0xb6:
+                    /* Right shift released */
+                    kb_shift = false;
+                    break;
+            }
         }
-    } else {
-        switch (key) {
-            case 0xaa:
-                /* Left shift released */
-                kb_shift = false;
-                break;
-            case 0xb6:
-                /* Right shift released */
-                kb_shift = false;
-                break;
-        }
+    }
+    else {
+        kb_current_char = 0;
+        kb_key_pressed = false;
     }
 }
 
@@ -62,9 +68,7 @@ void kb_get_string(char* buf, size_t n) {
 
     bool reading = true;
     do {
-        if (!kb_key_pressed)
-            continue;
-        kb_key_pressed = false;
+        asm volatile ("hlt");
 
         switch(kb_current_char) {
             case '\0':
@@ -72,6 +76,7 @@ void kb_get_string(char* buf, size_t n) {
 
             case '\n':
                 printf("\n");
+                kb_current_char = 0;
                 return;
 
             case '\b':
@@ -95,10 +100,11 @@ void kb_get_string(char* buf, size_t n) {
                 pos++;
                 break;
         }
+
+        kb_current_char = 0;
     } while (reading);
 }
 
 void kb_init() {
     irq_register(1, kb_handler);
-    serial_send("kb_init(): keyboard driver initialized\n");
 }

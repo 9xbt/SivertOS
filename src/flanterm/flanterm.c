@@ -74,7 +74,6 @@ void flanterm_context_reinit(struct flanterm_context *ctx) {
     ctx->cursor_enabled = true;
     ctx->scroll_enabled = true;
     ctx->control_sequence = false;
-    ctx->csi = false;
     ctx->escape = false;
     ctx->osc = false;
     ctx->osc_escape = false;
@@ -367,7 +366,7 @@ set_bg_bright:
                         (fg ? ctx->set_text_fg : ctx->set_text_bg)(ctx, col);
                     } else if (col < 16) {
                         (fg ? ctx->set_text_fg_bright : ctx->set_text_bg_bright)(ctx, col - 8);
-                    } else {
+                    } else if (col < 256) {
                         uint32_t rgb_value = col256[col - 16];
                         (fg ? ctx->set_text_fg_rgb : ctx->set_text_bg_rgb)(ctx, rgb_value);
                     }
@@ -616,15 +615,18 @@ static void control_sequence_parse(struct flanterm_context *ctx, uint8_t c) {
                 ctx->esc_values[0] = ctx->rows - 1;
             ctx->set_cursor_pos(ctx, ctx->esc_values[1], ctx->esc_values[0]);
             break;
-        case 'M':
-            for (size_t i = 0; i < ctx->esc_values[0]; i++) {
+        case 'M': {
+            size_t count = ctx->esc_values[0] > ctx->rows ? ctx->rows : ctx->esc_values[0];
+            for (size_t i = 0; i < count; i++) {
                 ctx->scroll(ctx);
             }
             break;
+        }
         case 'L': {
             size_t old_scroll_top_margin = ctx->scroll_top_margin;
             ctx->scroll_top_margin = y;
-            for (size_t i = 0; i < ctx->esc_values[0]; i++) {
+            size_t count = ctx->esc_values[0] > ctx->rows ? ctx->rows : ctx->esc_values[0];
+            for (size_t i = 0; i < count; i++) {
                 ctx->revscroll(ctx);
             }
             ctx->scroll_top_margin = old_scroll_top_margin;
@@ -700,11 +702,13 @@ static void control_sequence_parse(struct flanterm_context *ctx, uint8_t c) {
                 ctx->move_character(ctx, i - ctx->esc_values[0], y, i, y);
             ctx->set_cursor_pos(ctx, ctx->cols - ctx->esc_values[0], y);
             // FALLTHRU
-        case 'X':
-            for (size_t i = 0; i < ctx->esc_values[0]; i++)
+        case 'X': {
+            size_t count = ctx->esc_values[0] > ctx->cols ? ctx->cols : ctx->esc_values[0];
+            for (size_t i = 0; i < count; i++)
                 ctx->raw_putchar(ctx, ' ');
             ctx->set_cursor_pos(ctx, x, y);
             break;
+        }
         case 'm':
             sgr(ctx);
             break;
@@ -811,11 +815,6 @@ static void escape_parse(struct flanterm_context *ctx, uint8_t c) {
         return;
     }
 
-    if (ctx->csi == true) {
-        ctx->csi = false;
-        goto is_csi;
-    }
-
     size_t x, y;
     ctx->get_cursor_pos(ctx, &x, &y);
 
@@ -825,7 +824,6 @@ static void escape_parse(struct flanterm_context *ctx, uint8_t c) {
             ctx->osc = true;
             return;
         case '[':
-is_csi:
             for (size_t i = 0; i < FLANTERM_MAX_ESC_VALUES; i++)
                 ctx->esc_values[i] = 0;
             ctx->esc_values_i = 0;
@@ -1202,7 +1200,6 @@ static void flanterm_putchar(struct flanterm_context *ctx, uint8_t c) {
     if (ctx->discard_next || (c == 0x18 || c == 0x1a)) {
         ctx->discard_next = false;
         ctx->escape = false;
-        ctx->csi = false;
         ctx->control_sequence = false;
         ctx->unicode_remaining = 0;
         ctx->osc = false;
@@ -1278,9 +1275,6 @@ unicode_error:
         case 0x00:
         case 0x7f:
             return;
-        case 0x9b:
-            ctx->csi = true;
-            // FALLTHRU
         case 0x1b:
             ctx->escape_offset = 0;
             ctx->escape = true;
@@ -1346,5 +1340,7 @@ unicode_error:
 
     if (c >= 0x20 && c <= 0x7e) {
         ctx->raw_putchar(ctx, c);
+    } else {
+        ctx->raw_putchar(ctx, 0xfe);
     }
 }

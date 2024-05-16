@@ -1,11 +1,14 @@
 #include <apps/shell.h>
 
+const int shell_cmd_count = 6;
+
 const char *shell_cmds[] = {
     "help",
     "clear",
     "date",
     "uptime",
-    "paint"
+    "paint",
+    "crash",
 };
 
 const char *shell_cmd_descriptions[] = {
@@ -13,15 +16,17 @@ const char *shell_cmd_descriptions[] = {
     "Clears the screen",
     "Displays the date and time",
     "Displays how long the system has been running",
-    "Simple paint program to test the mouse driver"
+    "Simple paint program to test the mouse driver",
+    "As its name suggests, crashes the OS"
 };
 
-void *shell_cmd_handlers[] = {
+const void *shell_cmd_handlers[] = {
     shell_cmd_help,
     shell_cmd_clear,
     shell_cmd_date,
     shell_cmd_uptime,
-    shell_cmd_paint
+    shell_cmd_paint,
+    shell_cmd_crash
 };
 
 void shell_exec() {
@@ -35,7 +40,7 @@ void shell_exec() {
         return;
     }
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < shell_cmd_count; i++) {
         if (!strcmp(input, shell_cmds[i])) {
             void(*handler)(int, char**);
 

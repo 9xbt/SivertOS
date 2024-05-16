@@ -68,11 +68,9 @@ struct flanterm_fb_context {
     size_t height;
     size_t bpp;
 
-#ifdef FLANTERM_FB_SUPPORT_BPP
     uint8_t red_mask_size, red_mask_shift;
     uint8_t green_mask_size, green_mask_shift;
     uint8_t blue_mask_size, blue_mask_shift;
-#endif
 
     size_t font_bits_size;
     uint8_t *font_bits;
@@ -84,10 +82,8 @@ struct flanterm_fb_context {
     uint32_t default_fg, default_bg;
     uint32_t default_fg_bright, default_bg_bright;
 
-#ifndef FLANTERM_FB_DISABLE_CANVAS
     size_t canvas_size;
     uint32_t *canvas;
-#endif
 
     size_t grid_size;
     size_t queue_size;
@@ -115,67 +111,23 @@ struct flanterm_fb_context {
 };
 
 struct flanterm_context *flanterm_fb_init(
+    /* If _malloc and _free are nulled, use the bump allocated instance (1 use only). */
     void *(*_malloc)(size_t),
     void (*_free)(void *, size_t),
     uint32_t *framebuffer, size_t width, size_t height, size_t pitch,
-#ifdef FLANTERM_FB_SUPPORT_BPP
     uint8_t red_mask_size, uint8_t red_mask_shift,
     uint8_t green_mask_size, uint8_t green_mask_shift,
     uint8_t blue_mask_size, uint8_t blue_mask_shift,
-#endif
-#ifndef FLANTERM_FB_DISABLE_CANVAS
-    uint32_t *canvas,
-#endif
-    uint32_t *ansi_colours, uint32_t *ansi_bright_colours,
-    uint32_t *default_bg, uint32_t *default_fg,
-    uint32_t *default_bg_bright, uint32_t *default_fg_bright,
+    uint32_t *canvas, /* If nulled, no canvas. */
+    uint32_t *ansi_colours, uint32_t *ansi_bright_colours, /* If nulled, default. */
+    uint32_t *default_bg, uint32_t *default_fg, /* If nulled, default. */
+    uint32_t *default_bg_bright, uint32_t *default_fg_bright, /* If nulled, default. */
+    /* If font is null, use default font and font_width and font_height ignored. */
     void *font, size_t font_width, size_t font_height, size_t font_spacing,
+    /* If scale_x and scale_y are 0, automatically scale font based on resolution. */
     size_t font_scale_x, size_t font_scale_y,
     size_t margin
 );
-
-#ifndef FLANTERM_FB_DISABLE_BUMP_ALLOC
-static inline struct flanterm_context *flanterm_fb_simple_init(
-    uint32_t *framebuffer, size_t width, size_t height, size_t pitch
-#ifdef FLANTERM_FB_SUPPORT_BPP
-    ,
-    uint8_t red_mask_size, uint8_t red_mask_shift,
-    uint8_t green_mask_size, uint8_t green_mask_shift,
-    uint8_t blue_mask_size, uint8_t blue_mask_shift
-#endif
-) {
-    size_t font_scale_x = 1;
-    size_t font_scale_y = 1;
-    if (width >= (1920 + 1920 / 3) && height >= (1080 + 1080 / 3)) {
-        font_scale_x = 2;
-        font_scale_y = 2;
-    }
-    if (width >= (3840 + 3840 / 3) && height >= (2160 + 2160 / 3)) {
-        font_scale_x = 4;
-        font_scale_y = 4;
-    }
-
-    return flanterm_fb_init(
-        NULL,
-        NULL,
-        framebuffer, width, height, pitch,
-#ifdef FLANTERM_FB_SUPPORT_BPP
-        red_mask_size, red_mask_shift,
-        green_mask_size, green_mask_shift,
-        blue_mask_size, blue_mask_shift,
-#endif
-#ifndef FLANTERM_FB_DISABLE_CANVAS
-        NULL,
-#endif
-        NULL, NULL,
-        NULL, NULL,
-        NULL, NULL,
-        NULL, 0, 0, 1,
-        font_scale_x, font_scale_y,
-        0
-    );
-}
-#endif
 
 #ifdef __cplusplus
 }

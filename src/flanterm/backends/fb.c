@@ -25,6 +25,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 #include "../flanterm.h"
 #include "fb.h"
@@ -35,7 +36,10 @@ void *memcpy(void *, const void *, size_t);
 #ifndef FLANTERM_FB_DISABLE_BUMP_ALLOC
 
 #ifndef FLANTERM_FB_BUMP_ALLOC_POOL_SIZE
-#define FLANTERM_FB_BUMP_ALLOC_POOL_SIZE (64*1024*1024)
+#define FLANTERM_FB_BUMP_ALLOC_POOL_SIZE 873000
+
+#define FLANTERM_FB_WIDTH_LIMIT 1920
+#define FLANTERM_FB_HEIGHT_LIMIT 1200
 #endif
 
 static uint8_t bump_alloc_pool[FLANTERM_FB_BUMP_ALLOC_POOL_SIZE];
@@ -50,6 +54,8 @@ static void *bump_alloc(size_t s) {
     bump_alloc_ptr = next_ptr;
     return ret;
 }
+
+static bool bump_allocated_instance = false;
 
 #endif
 
@@ -400,7 +406,6 @@ static const uint8_t builtin_font[] = {
   0x00, 0x00, 0x00, 0x00
 };
 
-#ifdef FLANTERM_FB_SUPPORT_BPP
 static inline __attribute__((always_inline)) uint32_t convert_colour(struct flanterm_context *_ctx, uint32_t colour) {
     struct flanterm_fb_context *ctx = (void *)_ctx;
     uint32_t r = (colour >> 16) & 0xff;
@@ -408,9 +413,6 @@ static inline __attribute__((always_inline)) uint32_t convert_colour(struct flan
     uint32_t b =  colour & 0xff;
     return (r << ctx->red_mask_shift) | (g << ctx->green_mask_shift) | (b << ctx->blue_mask_shift);
 }
-#else
-#define convert_colour(CTX, COLOUR) (COLOUR)
-#endif
 
 static void flanterm_fb_save_state(struct flanterm_context *_ctx) {
     struct flanterm_fb_context *ctx = (void *)_ctx;
@@ -442,9 +444,7 @@ static void plot_char(struct flanterm_context *_ctx, struct flanterm_fb_char *c,
         return;
     }
 
-#ifdef FLANTERM_FB_DISABLE_CANVAS
     uint32_t default_bg = ctx->default_bg;
-#endif
 
     x = ctx->offset_x + x * ctx->glyph_width;
     y = ctx->offset_y + y * ctx->glyph_height;
@@ -454,22 +454,19 @@ static void plot_char(struct flanterm_context *_ctx, struct flanterm_fb_char *c,
     for (size_t gy = 0; gy < ctx->glyph_height; gy++) {
         uint8_t fy = gy / ctx->font_scale_y;
         volatile uint32_t *fb_line = ctx->framebuffer + x + (y + gy) * (ctx->pitch / 4);
-
-#ifndef FLANTERM_FB_DISABLE_CANVAS
         uint32_t *canvas_line = ctx->canvas + x + (y + gy) * ctx->width;
-#endif
-
         for (size_t fx = 0; fx < ctx->font_width; fx++) {
             bool draw = glyph[fy * ctx->font_width + fx];
             for (size_t i = 0; i < ctx->font_scale_x; i++) {
                 size_t gx = ctx->font_scale_x * fx + i;
-#ifndef FLANTERM_FB_DISABLE_CANVAS
-                uint32_t bg = c->bg == 0xffffffff ? canvas_line[gx] : c->bg;
-                uint32_t fg = c->fg == 0xffffffff ? canvas_line[gx] : c->fg;
-#else
-                uint32_t bg = c->bg == 0xffffffff ? default_bg : c->bg;
-                uint32_t fg = c->fg == 0xffffffff ? default_bg : c->fg;
-#endif
+                uint32_t bg, fg;
+                if (ctx->canvas != NULL) {
+                    bg = c->bg == 0xffffffff ? canvas_line[gx] : c->bg;
+                    fg = c->fg == 0xffffffff ? canvas_line[gx] : c->fg;
+                } else {
+                    bg = c->bg == 0xffffffff ? default_bg : c->bg;
+                    fg = c->fg == 0xffffffff ? default_bg : c->fg;
+                }
                 fb_line[gx] = draw ? fg : bg;
             }
         }
@@ -487,18 +484,14 @@ static void plot_char_masked(struct flanterm_context *_ctx, struct flanterm_fb_c
     x = ctx->offset_x + x * ctx->glyph_width;
     y = ctx->offset_y + y * ctx->glyph_height;
 
-#ifdef FLANTERM_FB_DISABLE_CANVAS
     uint32_t default_bg = ctx->default_bg;
-#endif
 
     bool *new_glyph = &ctx->font_bool[c->c * ctx->font_height * ctx->font_width];
     bool *old_glyph = &ctx->font_bool[old->c * ctx->font_height * ctx->font_width];
     for (size_t gy = 0; gy < ctx->glyph_height; gy++) {
         uint8_t fy = gy / ctx->font_scale_y;
         volatile uint32_t *fb_line = ctx->framebuffer + x + (y + gy) * (ctx->pitch / 4);
-#ifndef FLANTERM_FB_DISABLE_CANVAS
         uint32_t *canvas_line = ctx->canvas + x + (y + gy) * ctx->width;
-#endif
         for (size_t fx = 0; fx < ctx->font_width; fx++) {
             bool old_draw = old_glyph[fy * ctx->font_width + fx];
             bool new_draw = new_glyph[fy * ctx->font_width + fx];
@@ -506,13 +499,14 @@ static void plot_char_masked(struct flanterm_context *_ctx, struct flanterm_fb_c
                 continue;
             for (size_t i = 0; i < ctx->font_scale_x; i++) {
                 size_t gx = ctx->font_scale_x * fx + i;
-#ifndef FLANTERM_FB_DISABLE_CANVAS
-                uint32_t bg = c->bg == 0xffffffff ? canvas_line[gx] : c->bg;
-                uint32_t fg = c->fg == 0xffffffff ? canvas_line[gx] : c->fg;
-#else
-                uint32_t bg = c->bg == 0xffffffff ? default_bg : c->bg;
-                uint32_t fg = c->fg == 0xffffffff ? default_bg : c->fg;
-#endif
+                uint32_t bg, fg;
+                if (ctx->canvas != NULL) {
+                    bg = c->bg == 0xffffffff ? canvas_line[gx] : c->bg;
+                    fg = c->fg == 0xffffffff ? canvas_line[gx] : c->fg;
+                } else {
+                    bg = c->bg == 0xffffffff ? default_bg : c->bg;
+                    fg = c->fg == 0xffffffff ? default_bg : c->fg;
+                }
                 fb_line[gx] = new_draw ? fg : bg;
             }
         }
@@ -817,17 +811,15 @@ static void flanterm_fb_raw_putchar(struct flanterm_context *_ctx, uint8_t c) {
 static void flanterm_fb_full_refresh(struct flanterm_context *_ctx) {
     struct flanterm_fb_context *ctx = (void *)_ctx;
 
-#ifdef FLANTERM_FB_DISABLE_CANVAS
     uint32_t default_bg = ctx->default_bg;
-#endif
 
     for (size_t y = 0; y < ctx->height; y++) {
         for (size_t x = 0; x < ctx->width; x++) {
-#ifndef FLANTERM_FB_DISABLE_CANVAS
-            ctx->framebuffer[y * (ctx->pitch / sizeof(uint32_t)) + x] = ctx->canvas[y * ctx->width + x];
-#else
-            ctx->framebuffer[y * (ctx->pitch / sizeof(uint32_t)) + x] = default_bg;
-#endif
+            if (ctx->canvas != NULL) {
+                ctx->framebuffer[y * (ctx->pitch / sizeof(uint32_t)) + x] = ctx->canvas[y * ctx->width + x];
+            } else {
+                ctx->framebuffer[y * (ctx->pitch / sizeof(uint32_t)) + x] = default_bg;
+            }
         }
     }
 
@@ -847,6 +839,12 @@ static void flanterm_fb_deinit(struct flanterm_context *_ctx, void (*_free)(void
     struct flanterm_fb_context *ctx = (void *)_ctx;
 
     if (_free == NULL) {
+#ifndef FLANTERM_FB_DISABLE_BUMP_ALLOC
+        if (bump_allocated_instance == true) {
+            bump_alloc_ptr = 0;
+            bump_allocated_instance = false;
+        }
+#endif
         return;
     }
 
@@ -856,9 +854,9 @@ static void flanterm_fb_deinit(struct flanterm_context *_ctx, void (*_free)(void
     _free(ctx->queue, ctx->queue_size);
     _free(ctx->map, ctx->map_size);
 
-#ifndef FLANTERM_FB_DISABLE_CANVAS
-    _free(ctx->canvas, ctx->canvas_size);
-#endif
+    if (ctx->canvas != NULL) {
+        _free(ctx->canvas, ctx->canvas_size);
+    }
 
     _free(ctx, sizeof(struct flanterm_fb_context));
 }
@@ -867,14 +865,10 @@ struct flanterm_context *flanterm_fb_init(
     void *(*_malloc)(size_t),
     void (*_free)(void *, size_t),
     uint32_t *framebuffer, size_t width, size_t height, size_t pitch,
-#ifdef FLANTERM_FB_SUPPORT_BPP
     uint8_t red_mask_size, uint8_t red_mask_shift,
     uint8_t green_mask_size, uint8_t green_mask_shift,
     uint8_t blue_mask_size, uint8_t blue_mask_shift,
-#endif
-#ifndef FLANTERM_FB_DISABLE_CANVAS
     uint32_t *canvas,
-#endif
     uint32_t *ansi_colours, uint32_t *ansi_bright_colours,
     uint32_t *default_bg, uint32_t *default_fg,
     uint32_t *default_bg_bright, uint32_t *default_fg_bright,
@@ -882,19 +876,42 @@ struct flanterm_context *flanterm_fb_init(
     size_t font_scale_x, size_t font_scale_y,
     size_t margin
 ) {
-#ifndef FLANTERM_FB_DISABLE_BUMP_ALLOC
-    size_t orig_bump_alloc_ptr = bump_alloc_ptr;
-#endif
+    if (font_scale_x == 0 || font_scale_y == 0) {
+        font_scale_x = 1;
+        font_scale_y = 1;
+        if (width >= (1920 + 1920 / 3) && height >= (1080 + 1080 / 3)) {
+            font_scale_x = 2;
+            font_scale_y = 2;
+        }
+        if (width >= (3840 + 3840 / 3) && height >= (2160 + 2160 / 3)) {
+            font_scale_x = 4;
+            font_scale_y = 4;
+        }
+    }
 
-#ifdef FLANTERM_FB_SUPPORT_BPP
     if (red_mask_size < 8 || red_mask_size != green_mask_size || red_mask_size != blue_mask_size) {
         return NULL;
     }
-#endif
 
     if (_malloc == NULL) {
 #ifndef FLANTERM_FB_DISABLE_BUMP_ALLOC
+        if (bump_allocated_instance == true) {
+            return NULL;
+        }
         _malloc = bump_alloc;
+        // Limit terminal size if needed
+        if (width > FLANTERM_FB_WIDTH_LIMIT || height > FLANTERM_FB_HEIGHT_LIMIT) {
+            size_t width_limit = width > FLANTERM_FB_WIDTH_LIMIT ? FLANTERM_FB_WIDTH_LIMIT : width;
+            size_t height_limit = height > FLANTERM_FB_HEIGHT_LIMIT ? FLANTERM_FB_HEIGHT_LIMIT : height;
+
+            framebuffer = (uint32_t *)((uintptr_t)framebuffer + ((((height / 2) - (height_limit / 2)) * pitch) + (((width / 2) - (width_limit / 2)) * 4)));
+
+            width = width_limit;
+            height = height_limit;
+        }
+
+        // Force disable canvas
+        canvas = NULL;
 #else
         return NULL;
 #endif
@@ -909,14 +926,12 @@ struct flanterm_context *flanterm_fb_init(
     struct flanterm_context *_ctx = (void *)ctx;
     memset(ctx, 0, sizeof(struct flanterm_fb_context));
 
-#ifdef FLANTERM_FB_SUPPORT_BPP
     ctx->red_mask_size = red_mask_size;
     ctx->red_mask_shift = red_mask_shift + (red_mask_size - 8);
     ctx->green_mask_size = green_mask_size;
     ctx->green_mask_shift = green_mask_shift + (green_mask_size - 8);
     ctx->blue_mask_size = blue_mask_size;
     ctx->blue_mask_shift = blue_mask_shift + (blue_mask_size - 8);
-#endif
 
     if (ansi_colours != NULL) {
         for (size_t i = 0; i < 8; i++) {
@@ -1080,22 +1095,16 @@ struct flanterm_context *flanterm_fb_init(
     }
     memset(ctx->map, 0, ctx->map_size);
 
-#ifndef FLANTERM_FB_DISABLE_CANVAS
-    ctx->canvas_size = ctx->width * ctx->height * sizeof(uint32_t);
-    ctx->canvas = _malloc(ctx->canvas_size);
-    if (ctx->canvas == NULL) {
-        goto fail;
-    }
     if (canvas != NULL) {
+        ctx->canvas_size = ctx->width * ctx->height * sizeof(uint32_t);
+        ctx->canvas = _malloc(ctx->canvas_size);
+        if (ctx->canvas == NULL) {
+            goto fail;
+        }
         for (size_t i = 0; i < ctx->width * ctx->height; i++) {
             ctx->canvas[i] = convert_colour(_ctx, canvas[i]);
         }
-    } else {
-        for (size_t i = 0; i < ctx->width * ctx->height; i++) {
-            ctx->canvas[i] = ctx->default_bg;
-        }
     }
-#endif
 
     _ctx->raw_putchar = flanterm_fb_raw_putchar;
     _ctx->clear = flanterm_fb_clear;
@@ -1124,12 +1133,18 @@ struct flanterm_context *flanterm_fb_init(
     flanterm_context_reinit(_ctx);
     flanterm_fb_full_refresh(_ctx);
 
+#ifndef FLANTERM_FB_DISABLE_BUMP_ALLOC
+    if (_malloc == bump_alloc) {
+        bump_allocated_instance = true;
+    }
+#endif
+
     return _ctx;
 
 fail:
 #ifndef FLANTERM_FB_DISABLE_BUMP_ALLOC
     if (_malloc == bump_alloc) {
-        bump_alloc_ptr = orig_bump_alloc_ptr;
+        bump_alloc_ptr = 0;
         return NULL;
     }
 #endif
@@ -1138,11 +1153,9 @@ fail:
         return NULL;
     }
 
-#ifndef FLANTERM_FB_DISABLE_CANVAS
     if (ctx->canvas != NULL) {
         _free(ctx->canvas, ctx->canvas_size);
     }
-#endif
     if (ctx->map != NULL) {
         _free(ctx->map, ctx->map_size);
     }

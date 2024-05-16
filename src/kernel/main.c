@@ -3,10 +3,12 @@
 #include <flanterm/backends/fb.h>
 #include <arch/x86_64/io.h>
 #include <arch/x86_64/cpu/pic.h>
+#include <arch/x86_64/cpu/sse.h>
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/tables/gdt/gdt.h>
 #include <arch/x86_64/tables/idt/idt.h>
 #include <drivers/kb.h>
+#include <drivers/ata.h>
 #include <drivers/mouse.h>
 #include <mm/pmm.h>
 #include <mm/vmm.h>
@@ -68,8 +70,24 @@ void _start(void) {
     framebuffer = framebuffer_request.response->framebuffers[0];
     fb_addr = framebuffer->address;
 
-    flanterm_context = flanterm_fb_simple_init(
-        framebuffer->address, framebuffer->width, framebuffer->height, framebuffer->pitch
+    u32 fg = 0x1b1c1b;
+    u32 bg = 0xffffff;
+
+    flanterm_context = flanterm_fb_init(
+        NULL,
+        NULL,
+        framebuffer->address, framebuffer->width,
+        framebuffer->height, framebuffer->pitch,
+        framebuffer->red_mask_size, framebuffer->red_mask_shift,
+        framebuffer->green_mask_size, framebuffer->green_mask_shift,
+        framebuffer->blue_mask_size, framebuffer->blue_mask_shift,
+        NULL,
+        NULL, NULL,
+        &fg, &bg,
+        NULL, NULL,
+        NULL, 0, 0, 1,
+        0, 0,
+        15
     );
 
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
@@ -83,10 +101,22 @@ void _start(void) {
     mouse_init();
     pmm_init();
     vmm_init();
+    kheap_init();
+    printf("ata_init(): %d\n", ata_init());
+    if (!sse_enable()) {
+        panic("SSE_NOT_AVAILABLE");
+    }
 
-    //ata_init
+    u8 deeta[512];
+    deeta[0] = 'H';
+    deeta[1] = 'i';
+    deeta[2] = '!';
+    printf("%d\n", ata_write(1, deeta, 1));
 
-    kheap_init(PAGE_SIZE * 65536); /* 256mb */
+    u8 test[512];
+    printf("%d\n", ata_read(1, test, 1));
+
+    flanterm_write(flanterm_context, test, 3);
 
     for (;;) {
         shell_exec();

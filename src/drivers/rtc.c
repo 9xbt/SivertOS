@@ -76,7 +76,7 @@ u64 rtc_time() {
 
 uint64_t epoch()
 {
-    uint64_t seconds = rtc_second(), minutes = rtc_minute(), hours = rtc_hour() - 2, days = rtc_day() + 1, months = rtc_month(), years = rtc_year(), centuries = rtc_century();
+    uint64_t seconds = rtc_second(), minutes = rtc_minute(), hours = rtc_hour() - 2, days = rtc_day(), months = rtc_month(), years = rtc_year(), centuries = rtc_century();
 
     uint64_t jdn_current = jdn(days, months, centuries * 100 + years);
     uint64_t jdn_1970 = jdn(1, 1, (u16)1970);

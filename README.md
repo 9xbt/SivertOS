@@ -22,7 +22,13 @@ The radioactive x86-64 operating system
     - [X] Mouse
 - [X] RTC driver
 - [X] Serial driver
-- [ ] IDE/ATA driver
+
+### Tasking
+- [ ] SMP
+
+### Storage
+- [X] IDE
+- [ ] SATA
 
 ### Other
 - [X] Formatted printing

@@ -1,13 +1,10 @@
 #include <apps/shell/paint.h>
 
 void shell_cmd_paint(int argc, char** argv) {
-    (void)(argc);
-    (void)(argv);
+    (void)argc;
+    (void)argv;
 
     memset(fb_addr, 0, framebuffer->pitch * framebuffer->height);
-
-    flanterm_write(flanterm_context, "\033[H\033[?25l", 9);
-    printf("Simple paint program - Press any key to exit");
 
     while (kb_get_char() == 0) {
         if (!mouse_state.current.left && !mouse_state.current.right)
@@ -19,6 +16,6 @@ void shell_cmd_paint(int argc, char** argv) {
             fb_addr[mouse_state.current.y * framebuffer->width + mouse_state.current.x] = 0xFFFFFFFF; // draw new cursor
     }
 
-    memset(fb_addr, 0, framebuffer->pitch * framebuffer->height);
+    memset(fb_addr, 0x1b1c1b, framebuffer->pitch * framebuffer->height);
     flanterm_write(flanterm_context, "\033[H\033[2J\033[?25h", 13);
 }
