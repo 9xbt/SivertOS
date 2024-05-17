@@ -1,3 +1,8 @@
+/*
+ *  CREDITS: asterd-og on GitHub
+ *  https://github.com/asterd-og/ZanOS/
+ */
+
 #include <fs/ext2.h>
 #include <lib/alloc.h>
 #include <drivers/ata.h>
@@ -81,11 +86,9 @@ u8 ext2_init() {
     ext2_fs* fs = (ext2_fs*)kmalloc(sizeof(ext2_fs));
     ext2_sb* sb = (ext2_sb*)kmalloc(sizeof(ext2_sb));
     ata_read(2, (u8*)sb, 2);
-    if (sb->signature != 0xef53) {
+    if (sb->signature != 0xef53)
         // not a valid ext2 superblock
-        printf("\033[91m[ FAIL ]\033[0m Failed to Initialize EXT2 Driver.\n");
         return 1;
-    }
 
     fs->sb = sb;
     fs->block_size = (1024 << sb->log2_block);
@@ -106,6 +109,5 @@ u8 ext2_init() {
 
     root_fs = fs;
 
-    printf("\033[92m[  OK  ]\033[0m EXT2 Driver Initialized.\n");
     return 0;
 }

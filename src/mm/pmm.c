@@ -58,8 +58,6 @@ void pmm_init() {
         for (u64 j = 0; j < entry->length; j += PAGE_SIZE)
         bitmap_clear(pmm_bitmap, (entry->base + j) / PAGE_SIZE);
     }
-
-    printf("\033[92m[  OK  ]\033[0m PMM Initialized.\n");
 }
 
 void* pmm_alloc(size_t n) {

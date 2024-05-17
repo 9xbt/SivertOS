@@ -1,3 +1,7 @@
+/*
+ *  CREDITS: asterd-og on GitHub
+ */
+
 #include <mm/vmm.h>
 #include <limine.h>
 #include <lib/libc.h>
@@ -36,8 +40,6 @@ void vmm_init() {
     }
 
     vmm_switch_pm(vmm_kernel_pm);
-
-    printf("\033[92m[  OK  ]\033[0m VMM Initialized.\n");
 }
 
 uptr* vmm_get_next_lvl(uptr* lvl, uptr entry, u64 flags, bool alloc) {

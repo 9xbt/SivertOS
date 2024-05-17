@@ -1,3 +1,8 @@
+/*
+ *  CREDITS: asterd-og on GitHub
+ *  https://github.com/asterd-og/ZanOS/
+ */
+
 #include <lib/printf.h>
 #include <drivers/ata.h>
 #include <arch/x86_64/io.h>
@@ -108,9 +113,5 @@ u8 ata_write(u32 lba, u8* buffer, u32 sector_count) {
 
 u8 ata_init() {
     u8 ata_status = ata_identify(ATA_PRIMARY, ATA_MASTER);
-
-    if (!ata_status) printf("\033[92m[  OK  ]\033[0m PATA Driver Initialized.\n");
-    else printf("\033[91m[ FAIL ]\033[0m Failed to Initialize PATA Driver.\n");
-
     return ata_status;
 }

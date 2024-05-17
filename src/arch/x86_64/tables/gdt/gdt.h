@@ -1,3 +1,8 @@
+/*
+ *  CREDITS: asterd-og on GitHub
+ *  https://github.com/asterd-og/QuasarOS/
+ */
+
 #pragma once
 
 #include <types.h>

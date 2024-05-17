@@ -1,3 +1,7 @@
+/*
+ *  CREDITS: asterd-og on GitHub
+ */
+
 #pragma once
 
 #include <types.h>

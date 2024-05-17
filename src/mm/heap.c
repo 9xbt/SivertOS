@@ -1,3 +1,8 @@
+/*
+ *  CREDITS: asterd-og on GitHub
+ *  https://github.com/asterd-og/ZanOS/
+ */
+
 #include <mm/heap.h>
 #include <lib/libc.h>
 #include <arch/x86_64/cpu/serial.h>

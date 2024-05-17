@@ -22,6 +22,9 @@ The radioactive x86-64 operating system
     - [X] Mouse
 - [X] RTC driver
 - [X] Serial driver
+- [X] EXT2
+    - [X] Reading
+    - [ ] Writing
 
 ### Tasking
 - [ ] SMP

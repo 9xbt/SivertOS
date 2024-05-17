@@ -1,6 +1,11 @@
+/*
+ *  CREDITS: asterd-og on GitHub
+ *  https://github.com/asterd-og/QuasarOS/
+ */
+
 #include <arch/x86_64/tables/gdt/gdt.h>
 
-u64 gdt_table[] = {
+const u64 gdt_table[] = {
     0x0000000000000000,
 
     0x00009a000000ffff,

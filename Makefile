@@ -39,7 +39,7 @@ LDFLAGS = \
     --no-dynamic-linker \
     -z text \
     -z max-page-size=0x1000 \
-    -T conf/linker.ld
+    -T src/linker.ld
 
 # NASM flags
 NASMFLAGS = \
@@ -54,7 +54,7 @@ QEMUFLAGS = \
 	-serial stdio \
 	-cdrom $(IMAGE_NAME).iso \
 	-boot d \
-	-drive file="hdd.img"
+	-drive file="ext2.hdd"
 
 # Source files
 CFILES := $(shell cd src && find -L * -type f -name '*.c')
@@ -82,7 +82,7 @@ iso:
 	mkdir -p iso_root/boot
 	cp -va bin/. iso_root/boot/
 	mkdir -p iso_root/boot/limine
-	cp -v conf/limine.cfg limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin iso_root/boot/limine/
+	cp -v src/limine.cfg limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin iso_root/boot/limine/
 	mkdir -p iso_root/EFI/BOOT
 	cp -v limine/BOOTX64.EFI iso_root/EFI/BOOT/
 	cp -v limine/BOOTIA32.EFI iso_root/EFI/BOOT/
@@ -95,12 +95,12 @@ iso:
 	rm -rf iso_root
 
 hdd:
-ifeq (,$(wildcard hdd.img))
-	truncate -s 100M hdd.img
-	mkfs.ext2 hdd.img
+ifeq (,$(wildcard ext2.hdd))
+	truncate -s 100M ext2.hdd
+	mkfs.ext2 ext2.hdd
 endif
 
-bin/$(KERNEL): Makefile conf/linker.ld $(OBJ)
+bin/$(KERNEL): Makefile src/linker.ld $(OBJ)
 	mkdir -p "$$(dirname $@)"
 	$(LD) $(OBJ) $(LDFLAGS) -o $@
     

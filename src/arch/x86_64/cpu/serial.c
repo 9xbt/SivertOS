@@ -1,3 +1,8 @@
+/*
+ *  CREDITS: asterd-og on GitHub
+ *  https://github.com/asterd-og/QuasarOS/
+ */
+
 #include <arch/x86_64/cpu/serial.h>
 #include <arch/x86_64/io.h>
 #include <lib/libc.h>
@@ -19,8 +24,6 @@ int serial_init() {
     }
 
     outb(COM1 + 4, 0x0F);
-
-    printf("\033[92m[  OK  ]\033[0m Serial Driver Initialized.\n");
     return 0;
 }
 

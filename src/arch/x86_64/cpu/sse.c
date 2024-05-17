@@ -11,6 +11,4 @@ void sse_enable() {
     asm volatile("mov %%cr4, %0" :"=r"(cr4) :: "memory");
     cr4 |= (u64)(3 << 9);
     asm volatile("mov %0, %%cr4" :: "r"(cr4) : "memory");
-
-    printf("\033[92m[  OK  ]\033[0m SSE Enabled.\n");
 }

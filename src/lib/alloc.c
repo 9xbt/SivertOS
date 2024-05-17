@@ -4,8 +4,6 @@ heap* kernel_heap;
 
 void kheap_init() {
     kernel_heap = heap_create();
-
-    printf("\033[92m[  OK  ]\033[0m Kernel Heap Created.\n");
 }
 
 void* kmalloc(u64 size) {

@@ -101,6 +101,4 @@ void mouse_init() {
     asm volatile ("sti");
 
     irq_register(12, mouse_handler);
-
-    printf("\033[92m[  OK  ]\033[0m Mouse Driver Initialized.\n");
 }

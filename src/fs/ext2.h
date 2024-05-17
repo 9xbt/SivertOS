@@ -1,6 +1,14 @@
+/*
+ *  CREDITS: asterd-og on GitHub
+ *  https://github.com/asterd-og/ZanOS/
+ * 
+ *  i was gonna try to impl it myself but i ended up copy pasting, if not 100%, 99% of his code :sob:
+ */
+
 #pragma once
 
 #include <types.h>
+#include <fs/vfs.h>
 
 #define EXT_FIFO 0x1000
 #define EXT_CHAR_DEV 0x2000
@@ -123,3 +131,12 @@ typedef struct {
 extern ext2_fs* root_fs;
 
 u8 ext2_init();
+
+void ext2_read_inode(ext2_fs* fs, u32 inode, ext2_inode* in);
+u32 ext2_get_inode(ext2_fs* fs, ext2_inode* in, char* name);
+void ext2_read_inode_blocks(ext2_fs* fs, ext2_inode* in, u8* buf);
+u32 ext2_read_file(ext2_fs* fs, ext2_inode* in, char* name, u8* buf);
+
+i32 ext2_read(struct vfs_node* vnode, u8* buffer, u32 count);
+vfs_direntry* ext2_readdir(struct vfs_node* vnode, u32 index);
+vfs_node* ext2_finddir(struct vfs_node* vnode, char* path);

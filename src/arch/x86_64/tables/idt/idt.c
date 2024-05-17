@@ -66,8 +66,6 @@ void idt_init() {
 
     asm volatile ("lidt %0" : : "m"(idt_data) : "memory");
     asm volatile ("sti");
-
-    printf("\033[92m[  OK  ]\033[0m IDT Initialized.\n");
 }
 
 void idt_reinit() {
