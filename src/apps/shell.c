@@ -1,6 +1,6 @@
 #include <apps/shell.h>
 
-const int shell_cmd_count = 6;
+const int shell_cmd_count = 7;
 
 const char *shell_cmds[] = {
     "help",
@@ -8,6 +8,7 @@ const char *shell_cmds[] = {
     "date",
     "uptime",
     "paint",
+    "ls",
     "crash",
 };
 
@@ -17,6 +18,7 @@ const char *shell_cmd_descriptions[] = {
     "Displays the date and time",
     "Displays how long the system has been running",
     "Simple paint program to test the mouse driver",
+    "Lists the files in the current directory",
     "As its name suggests, crashes the OS"
 };
 
@@ -26,11 +28,12 @@ const void *shell_cmd_handlers[] = {
     shell_cmd_date,
     shell_cmd_uptime,
     shell_cmd_paint,
+    shell_cmd_ls,
     shell_cmd_crash
 };
 
 void shell_exec() {
-    const char prompt[] = "\033[91msivert\033[94m # \033[0m";
+    const char prompt[] = "\033[91msivert\033[94m / # \033[0m";
     flanterm_write(flanterm_context, prompt, sizeof(prompt));
 
     char input[256];

@@ -109,24 +109,6 @@ void _start(void) {
     ext2_init();
     vfs_init();
 
-    int i = 0;
-    vfs_direntry* node = 0;
-
-    while ((node = vfs_readdir(vfs_root, i)) != NULL) {
-        printf("Found node: ");
-        vfs_node* file = vfs_finddir(vfs_root, node->name);
-        if (file->type == VFS_DIRECTORY)
-            printf("\033[38;2;0;255;0m%s\033[0m\n", file->name);
-        else {
-            printf("%s\n", file->name);
-            printf(" contents: ");
-            char buf[1024];
-            vfs_read(file, buf, 1024);
-            printf("%s\n", buf);
-        }
-        i++;
-    }
-
     for (;;) {
         shell_exec();
     }

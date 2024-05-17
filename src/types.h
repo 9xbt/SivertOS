@@ -6,7 +6,7 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
-// Holy-C like types
+// Long live Holy-C
 
 typedef uint8_t u8;
 typedef uint16_t u16;
