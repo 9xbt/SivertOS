@@ -12,14 +12,14 @@
 #define ATA_SLAVE 0xB0
 
 #define ATA_WAIT 0x00
-#define ATA_IDENT 0xEC
+#define ATA_IDENTIFY 0xEC
 #define ATA_READ 0x20
 #define ATA_WRITE 0x30
 
 extern char ata_name[40];
 
 enum {
-    ATA_OK,
+    ATA_OKAY,
     ATA_DISK_NOT_IDENTIFIED,
     ATA_DISK_ERR,
     ATA_DISK_NOT_READY

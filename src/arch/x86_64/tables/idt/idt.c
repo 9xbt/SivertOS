@@ -66,6 +66,8 @@ void idt_init() {
 
     asm volatile ("lidt %0" : : "m"(idt_data) : "memory");
     asm volatile ("sti");
+
+    printf("\033[92m[  OK  ]\033[0m IDT Initialized.\n");
 }
 
 void idt_reinit() {
@@ -110,7 +112,7 @@ void isr_handler(registers* r) {
         "R8 =0x%18x   R9 =0x%18x   R10=0x%18x   R11=0x%18x\n"
         "R12=0x%18x   R13=0x%18x   R14=0x%18x   R15=0x%18x\n"
         "RIP=0x%18x   RFL=0x%18x\n\n"
-        "Error code: %s\n\nPlease restart your computer.",
+        "Error code: %s\n\nPlease restart your computer to continue.",
         
         (u32)r->rax, (u32)r->rbx, (u32)r->rcx, (u32)r->rdx,
         (u32)r->rsi, (u32)r->rdi, (u32)r->rbp, (u32)r->rsp,

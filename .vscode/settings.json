@@ -24,6 +24,8 @@
         "libc.h": "c",
         "date.h": "c",
         "panic.h": "c",
-        "alloc.h": "c"
+        "alloc.h": "c",
+        "random": "c",
+        "printf.h": "c"
     }
 }

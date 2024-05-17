@@ -1,10 +1,4 @@
-/*
- *  CREDITS: asterd-og on GitHub
- *  https://github.com/asterd-og/
- * 
- *  Simplest ATA driver i could find so yeah
- */
-
+#include <lib/printf.h>
 #include <drivers/ata.h>
 #include <arch/x86_64/io.h>
 
@@ -28,7 +22,7 @@ u8 ata_poll() {
         else if (status & 0x01) return ATA_DISK_ERR;
     }
 
-    return ATA_OK;
+    return ATA_OKAY;
 }
 
 u8 ata_identify(u16 ata, u8 type) {
@@ -38,13 +32,13 @@ u8 ata_identify(u16 ata, u8 type) {
     // Select disk
     outb(ata + 6, type); // master or slave
     for (u16 i = 0x1F2; i != 0x1F5; i++)
-    outb(i, 0);
-    outb(ata + 7, ATA_IDENT);
+        outb(i, 0);
+    outb(ata + 7, ATA_IDENTIFY);
   
     u8 status = inb(ata + 7);
     if (status == 0) return ATA_DISK_NOT_IDENTIFIED;
 
-    if (ata_poll() != ATA_OK)
+    if (ata_poll() != ATA_OKAY)
         return ATA_DISK_ERR;
 
     u8 buf[512];
@@ -57,7 +51,7 @@ u8 ata_identify(u16 ata, u8 type) {
   
     ata_400ns();
   
-    return ATA_OK;
+    return ATA_OKAY;
 }
 
 u8 ata_read(u32 lba, u8* buffer, u32 sector_count) {
@@ -73,17 +67,17 @@ u8 ata_read(u32 lba, u8* buffer, u32 sector_count) {
     u32 i = 0;
 
     for (; i < sector_count * 512; i += 2) {
-        if (ata_poll() != ATA_OK)
+        if (ata_poll() != ATA_OKAY)
             return ATA_DISK_ERR;
         val = inw(ata_base);
         buffer[i] = val & 0x00ff;
         if (i + 1 < sector_count * 512)
-            buffer[i + 1] = (val >> 8) & 0x00ff;
+        buffer[i + 1] = (val >> 8) & 0x00ff;
     }
 
     ata_400ns();
 
-    return ATA_OK;
+    return ATA_OKAY;
 }
 
 u8 ata_write(u32 lba, u8* buffer, u32 sector_count) {
@@ -99,7 +93,7 @@ u8 ata_write(u32 lba, u8* buffer, u32 sector_count) {
     u32 i = 0;
 
     for (; i < sector_count * 512; i += 2) {
-        if (ata_poll() != ATA_OK)
+        if (ata_poll() != ATA_OKAY)
             return ATA_DISK_ERR;
         val = buffer[i];
         if (i + 1 < sector_count * 512)
@@ -109,10 +103,14 @@ u8 ata_write(u32 lba, u8* buffer, u32 sector_count) {
   
     ata_400ns();
   
-    return ATA_OK;
+    return ATA_OKAY;
 }
 
 u8 ata_init() {
     u8 ata_status = ata_identify(ATA_PRIMARY, ATA_MASTER);
+
+    if (!ata_status) printf("\033[92m[  OK  ]\033[0m PATA Driver Initialized.\n");
+    else printf("\033[91m[ FAIL ]\033[0m Failed to Initialize PATA Driver.\n");
+
     return ata_status;
 }

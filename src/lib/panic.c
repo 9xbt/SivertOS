@@ -2,12 +2,8 @@
 
 void panic(const char *format, ...) {
     asm volatile ("cli");
-    
-    for (u64 y = 0; y < framebuffer->height; y++) {
-        for (u64 x = 0; x < framebuffer->width; x++) { 
-            fb_addr[y * framebuffer->width + x] = 0xAA;
-        }
-    }
+
+    cv_clear(framebuffer->address, framebuffer->width, framebuffer->height, 0x0000AA);
 
     flanterm_write(flanterm_context, "\033[37;44m\033[H\033[2J\033[?25l", 21);
     printf("SivertOS 0.0.1\nKernel panic!\n\n");
@@ -17,7 +13,7 @@ void panic(const char *format, ...) {
     vprintf(format, args);
     va_end(args);
 
-    printf("\n\nPlease restart your computer.\n");
+    printf("\n\nPlease restart your computer to continue.\n");
 
     for (;;) asm volatile ("hlt");
 }

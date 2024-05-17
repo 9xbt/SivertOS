@@ -2,6 +2,7 @@
 
 #include <types.h>
 #include <lib/printf.h>
+#include <gfx/canvas.h>
 #include <kernel/kernel.h>
 #include <flanterm/flanterm.h>
 

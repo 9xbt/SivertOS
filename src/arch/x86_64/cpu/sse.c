@@ -1,14 +1,7 @@
 #include <types.h>
+#include <lib/printf.h>
 
-bool sse_enabled = false;
-
-extern bool sse_supported();
-
-bool sse_enable() {
-    if (!sse_supported()) {
-        return false;
-    }
-
+void sse_enable() {
     u64 cr0;
     u64 cr4;
     asm volatile("mov %%cr0, %0" :"=r"(cr0) :: "memory");
@@ -18,7 +11,6 @@ bool sse_enable() {
     asm volatile("mov %%cr4, %0" :"=r"(cr4) :: "memory");
     cr4 |= (u64)(3 << 9);
     asm volatile("mov %0, %%cr4" :: "r"(cr4) : "memory");
-    sse_enabled = true;
 
-    return true;
+    printf("\033[92m[  OK  ]\033[0m SSE Enabled.\n");
 }

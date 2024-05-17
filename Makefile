@@ -49,8 +49,7 @@ NASMFLAGS = \
     -f elf64
 
 # QEMU flags
-QEMUFLAGS = -M smm=off \
-	-M q35 \
+QEMUFLAGS = \
 	-m 2G \
 	-serial stdio \
 	-cdrom $(IMAGE_NAME).iso \
@@ -97,7 +96,8 @@ iso:
 
 hdd:
 ifeq (,$(wildcard hdd.img))
-	qemu-img create -f qcow2 hdd.img 100M
+	truncate -s 100M hdd.img
+	mkfs.ext2 hdd.img
 endif
 
 bin/$(KERNEL): Makefile conf/linker.ld $(OBJ)

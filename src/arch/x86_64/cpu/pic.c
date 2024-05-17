@@ -1,5 +1,6 @@
-#include <arch/x86_64/cpu/pic.h>
+#include <lib/printf.h>
 #include <arch/x86_64/io.h>
+#include <arch/x86_64/cpu/pic.h>
 
 void pic_remap() {
     // This will start the init sequence in cascade mode
@@ -14,6 +15,8 @@ void pic_remap() {
 
     outb(PIC1_DAT, 0); // Master PIC mask
     outb(PIC2_DAT, 0); // Slave PIC mask
+
+    printf("\033[92m[  OK  ]\033[0m PIC Remapped.\n");
 }
 
 void pic_eoi(u8 no) {

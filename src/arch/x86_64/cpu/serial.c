@@ -19,6 +19,8 @@ int serial_init() {
     }
 
     outb(COM1 + 4, 0x0F);
+
+    printf("\033[92m[  OK  ]\033[0m Serial Driver Initialized.\n");
     return 0;
 }
 

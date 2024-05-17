@@ -13,6 +13,7 @@
 #include <mm/pmm.h>
 #include <mm/vmm.h>
 #include <mm/heap.h>
+#include <fs/ext2.h>
 #include <lib/alloc.h>
 #include <lib/panic.h>
 #include <lib/printf.h>
@@ -87,7 +88,7 @@ void _start(void) {
         NULL, NULL,
         NULL, 0, 0, 1,
         0, 0,
-        15
+        8
     );
 
     const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
@@ -102,21 +103,11 @@ void _start(void) {
     pmm_init();
     vmm_init();
     kheap_init();
-    printf("ata_init(): %d\n", ata_init());
-    if (!sse_enable()) {
-        panic("SSE_NOT_AVAILABLE");
-    }
+    sse_enable();
+    ata_init();
+    ext2_init();
 
-    u8 deeta[512];
-    deeta[0] = 'H';
-    deeta[1] = 'i';
-    deeta[2] = '!';
-    printf("%d\n", ata_write(1, deeta, 1));
-
-    u8 test[512];
-    printf("%d\n", ata_read(1, test, 1));
-
-    flanterm_write(flanterm_context, test, 3);
+    printf("\n");
 
     for (;;) {
         shell_exec();

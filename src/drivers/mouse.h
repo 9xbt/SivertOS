@@ -1,9 +1,10 @@
 #pragma once
 
 #include <types.h>
-#include <arch/x86_64/tables/idt/idt.h>
+#include <lib/printf.h>
 #include <arch/x86_64/io.h>
 #include <arch/x86_64/cpu/serial.h>
+#include <arch/x86_64/tables/idt/idt.h>
 #include <kernel/kernel.h>
 
 typedef struct {

@@ -107,4 +107,6 @@ void kb_get_string(char* buf, size_t n) {
 
 void kb_init() {
     irq_register(1, kb_handler);
+
+    printf("\033[92m[  OK  ]\033[0m Keyboard Driver Initialized.\n");
 }
