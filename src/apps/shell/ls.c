@@ -7,11 +7,14 @@ void shell_cmd_ls(int argc, char** argv) {
     int i = 0;
     while ((dirent = vfs_readdir(vfs_root, i)) != NULL) {
         vfs_node* node = vfs_finddir(vfs_root, dirent->name);
-        printf("%s%s\033[0m  ", (node->type == VFS_DIRECTORY ? "\e[94m" : "\e[91m"), dirent->name);
+
+        char *buf = kmalloc(1024);
+            vfs_read(node, buf, 1024);
+            printf(buf);
+
+        printf("(%x)%s  ", node->type, dirent->name);
         kfree(dirent->name);
         kfree(dirent);
-        //kfree(node->name);
-        //kfree(node);
         i++;
     }
 

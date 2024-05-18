@@ -14,7 +14,7 @@
 typedef struct {
     char* name;
     u32 ino;
-} vfs_direntry;
+} vfs_dirent;
 
 typedef struct vfs_node {
     char* name;
@@ -24,7 +24,7 @@ typedef struct vfs_node {
     u32 ino;
     i32(*read)(struct vfs_node* vnode, u8* buffer, u32 count);
     i32(*write)(struct vfs_node* vnode, u8* buffer, u32 count);
-    vfs_direntry*(*readdir)(struct vfs_node* vnode, u32 index);
+    vfs_dirent*(*readdir)(struct vfs_node* vnode, u32 index);
     struct vfs_node*(*finddir)(struct vfs_node* vnode, char* path);
 } vfs_node;
 
@@ -33,6 +33,6 @@ extern vfs_node* vfs_root; // "/" path
 void vfs_init();
 i32 vfs_write(vfs_node* vnode, u8* buffer, u32 count);
 i32 vfs_read(vfs_node* vnode, u8* buffer, u32 count);
-vfs_direntry* vfs_readdir(vfs_node* vnode, u32 index);
+vfs_dirent* vfs_readdir(vfs_node* vnode, u32 index);
 vfs_node* vfs_finddir(vfs_node* vnode, char* path);
 vfs_node* vfs_open(vfs_node* vnode, char* path); // traverse directories

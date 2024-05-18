@@ -19,7 +19,7 @@ void vfs_init() {
     vfs_root->read = NULL;
     vfs_root->readdir = ext2_readdir;
     vfs_root->finddir = ext2_finddir;
-    vfs_root->size = root_fs->root_inode->size;
+    vfs_root->size = root_fs->root_ino->size;
     vfs_root->type = VFS_DIRECTORY;
 }
 
@@ -37,7 +37,7 @@ i32 vfs_read(vfs_node* vnode, u8* buffer, u32 count) {
     return -1;
 }
 
-vfs_direntry* vfs_readdir(vfs_node* vnode, u32 index) {
+vfs_dirent* vfs_readdir(vfs_node* vnode, u32 index) {
     if (!vnode) return NULL;
     if (vnode->readdir && vnode->type == VFS_DIRECTORY)
         return vnode->readdir(vnode, index);

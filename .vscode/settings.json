@@ -26,6 +26,7 @@
         "panic.h": "c",
         "alloc.h": "c",
         "random": "c",
-        "printf.h": "c"
+        "printf.h": "c",
+        "heap.h": "c"
     }
 }

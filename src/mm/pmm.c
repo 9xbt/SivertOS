@@ -1,14 +1,15 @@
 /*
  *  CREDITS: asterd-og on GitHub
- *  https://github.com/asterd-og/QuasarOS/
+ *  https://github.com/asterd-og/ZanOS/
  */
 
 #include <mm/pmm.h>
 #include <limine.h>
-#include <mm/bitmap.h>
+#include <lib/libc.h>
+#include <lib/bitmap.h>
 #include <arch/x86_64/cpu/serial.h>
 
-u8 *pmm_bitmap = NULL;
+u8* pmm_bitmap = NULL;
 u64 pmm_free_pages = 0;
 u64 pmm_used_pages = 0;
 u64 pmm_total_pages = 0;
@@ -24,7 +25,7 @@ struct limine_memmap_response* pmm_memmap = NULL;
 void pmm_init() {
     pmm_memmap = memmap_request.response;
     struct limine_memmap_entry** entries = pmm_memmap->entries;
-  
+    
     u64 higher_address = 0;
     u64 top_address = 0;
 
@@ -32,11 +33,9 @@ void pmm_init() {
 
     for (u64 i = 0; i < pmm_memmap->entry_count; i++) {
         entry = entries[i];
-        if (entry->type != LIMINE_MEMMAP_USABLE)
-        continue;
+        if (entry->type != LIMINE_MEMMAP_USABLE) continue;
         top_address = entry->base + entry->length;
-        if (top_address > higher_address)
-        higher_address = top_address;
+        if (top_address > higher_address) higher_address = top_address;
     }
 
     pmm_total_pages = higher_address / PAGE_SIZE;
@@ -56,32 +55,52 @@ void pmm_init() {
         entry = entries[i];
         if (entry->type != LIMINE_MEMMAP_USABLE) continue;
         for (u64 j = 0; j < entry->length; j += PAGE_SIZE)
-        bitmap_clear(pmm_bitmap, (entry->base + j) / PAGE_SIZE);
+            bitmap_clear(pmm_bitmap, (entry->base + j) / PAGE_SIZE);
     }
+    serial_printf("pmm_init(): PMM Initialised at %lx with bitmap size of %ld.\n", (u64)pmm_bitmap, bitmap_size);
 }
 
-void* pmm_alloc(size_t n) {
+u64 pmm_find_pages(usize n) {
     u64 pages = 0;
+    u64 first_page = pmm_last_page;
     while (pages < n) {
         if (pmm_last_page == pmm_total_pages) {
-            panic("OUT_OF_MEMORY");
+            serial_printf("pmm_alloc(): Ran out of memory.\n");
+            return 0;
         }
-        if (bitmap_get(pmm_bitmap, pmm_last_page + pages) == 0)
+        if (bitmap_get(pmm_bitmap, pmm_last_page + pages) == 0) {
             pages++;
-        else {
-            pmm_last_page++;
+                if (pages == n) {
+                    for (u64 i = 0; i < pages; i++)
+                    bitmap_set(pmm_bitmap, pmm_last_page + i);
+                    pmm_last_page += pages;
+                    return first_page; // Return the start of the pages
+                }
+            }
+            else {
+            pmm_last_page += (pages == 0 ? 1 : pages);
+            first_page = pmm_last_page;
             pages = 0;
         }
     }
-    for (u64 i = 0; i < n; i++)
-        bitmap_set(pmm_bitmap, pmm_last_page + i);
-    pmm_last_page += pages;
-    return (void*)((pmm_last_page - n) * PAGE_SIZE); // Return the start of the pages
+    return 0;
 }
 
-void pmm_free(void* ptr, size_t n) {
+void* pmm_alloc(usize n) {
+    u64 first = pmm_find_pages(n);
+    if (first == 0) {
+        pmm_last_page = 0;
+        first = pmm_find_pages(n);
+        if (first == 0) {
+            serial_printf("pmm_alloc(): Couldn't allocate %lu pages: Not enough memory.\n", n);
+            return NULL;
+        }
+    }
+    return (void*)(first * PAGE_SIZE);
+}
+
+void pmm_free(void* ptr, usize n) {
     u64 idx = (u64)ptr / PAGE_SIZE;
     for (u64 i = 0; i < n; i++)
         bitmap_clear(pmm_bitmap, idx + i);
-    pmm_last_page = idx;
 }

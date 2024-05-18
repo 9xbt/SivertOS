@@ -92,8 +92,7 @@ void _start(void) {
         8
     );
 
-    const char welcome_msg[] = "Welcome to \033[1;36mSivertOS\033[0m!\n\n";
-    flanterm_write(flanterm_context, welcome_msg, sizeof(welcome_msg));
+    printf("Welcome to \033[1;36mSivertOS\033[0m!\n\n");
 
     gdt_init();
     serial_init();

@@ -1,8 +1,6 @@
 /*
  *  CREDITS: asterd-og on GitHub
  *  https://github.com/asterd-og/ZanOS/
- * 
- *  i was gonna try to impl it myself but i ended up copy pasting, if not 100%, 99% of his code :sob:
  */
 
 #pragma once
@@ -32,9 +30,9 @@ typedef struct {
     u32 blocks_per_group;
     u32 frags_per_group;
     u32 inodes_per_group;
-    u32 last_mount_time;
-    u32 last_write_time;
-    u16 mount_times_check;
+    u32 last_mount_time; // posix time
+    u32 last_write_time; // posix time
+    u16 mount_times_check; // times the volume has been mounted since it's last consistency check
     u16 mount_times_allowed;
     u16 signature;
     u16 state;
@@ -47,13 +45,13 @@ typedef struct {
     u16 resv_blocks_user_id;
     u16 resv_blocks_group_id;
 
-    // extended superblock
+    // extended sb
     u32 first_inode;
     u16 inode_size;
     u16 sb_bgd;
     u32 opt_features;
-    u32 req_features;
-    u32 mount_features;
+    u32 req_features; // features needed to mount
+    u32 mount_features; // features needed to mount as read-only
     u8 fs_id[16];
     char vol_name[16];
     char vol_path_mount[64];
@@ -97,7 +95,7 @@ typedef struct {
     u16 total_size;
     u8 name_len;
     u8 type;
-     // only if the feature bit for "directory entries have file type byte" is set, else this is the most-significant 8 bits of the name length
+    // only if the feature bit for "directory entries have file type byte" is set, else this is the most-significant 8 bits of the name length
     u8 name[];
 } ext2_dirent;
 
@@ -108,7 +106,8 @@ typedef struct {
     u16 free_blocks;
     u16 free_inodes;
     u16 directories_count;
-    u8 resv[14];
+    u16 pad;
+    u8 resv[12];
 } ext2_bgd;
 
 typedef struct {
@@ -120,7 +119,7 @@ typedef struct {
     ext2_sb* sb;
     ext2_bgd* bgd_table;
     ext2_cache* block_cache;
-    ext2_inode* root_inode;
+    ext2_inode* root_ino;
     u32 block_size;
     u32 bgd_count;
     u32 bgd_block;
@@ -138,5 +137,5 @@ void ext2_read_inode_blocks(ext2_fs* fs, ext2_inode* in, u8* buf);
 u32 ext2_read_file(ext2_fs* fs, ext2_inode* in, char* name, u8* buf);
 
 i32 ext2_read(struct vfs_node* vnode, u8* buffer, u32 count);
-vfs_direntry* ext2_readdir(struct vfs_node* vnode, u32 index);
+vfs_dirent* ext2_readdir(struct vfs_node* vnode, u32 index);
 vfs_node* ext2_finddir(struct vfs_node* vnode, char* path);
