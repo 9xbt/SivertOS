@@ -20,6 +20,7 @@
 #include <lib/printf.h>
 #include <apps/shell.h>
 #include <ui/wm.h>
+#include <ui/window.h>
 
 LIMINE_BASE_REVISION(1)
 
@@ -35,9 +36,10 @@ volatile struct limine_hhdm_request hhdm_request = {
 
 struct limine_framebuffer *framebuffer = NULL;
 struct flanterm_context *flanterm_context = NULL;
+u64 hhdm_offset;
 
-u32 *fb_addr;
-u64  hhdm_offset;
+fb_t* back_fb;
+fb_t* front_fb;
 
 void hcf() {
     for (;;)
@@ -59,7 +61,7 @@ int mubsan_log(const char* format, ...) {
 }
 
 void _start(void) {
-    // Ensure the bootloader actually understands our base revision (see spec).
+    // Ensure the bootloader actually cunderstands our base revision (see spec).
     if (LIMINE_BASE_REVISION_SUPPORTED == false) {
         hcf();
     }
@@ -71,7 +73,6 @@ void _start(void) {
 
     hhdm_offset = hhdm_request.response->offset;
     framebuffer = framebuffer_request.response->framebuffers[0];
-    fb_addr = framebuffer->address;
 
     u32 fg = 0x1b1c1b;
     u32 bg = 0xffffff;
@@ -93,8 +94,6 @@ void _start(void) {
         8
     );
 
-    printf("Welcome to \033[1;36mSivertOS\033[0m!\n\n");
-
     gdt_init();
     serial_init();
     idt_init();
@@ -105,18 +104,22 @@ void _start(void) {
     vmm_init();
     kheap_init();
     sse_enable();
+
+    printf("Welcome to \033[1;36mSivertOS\033[0m!\n\n");
+
+    back_fb = fb_create_new(framebuffer->width, framebuffer->height);
+    front_fb = fb_create(framebuffer->width, framebuffer->height, framebuffer->address);
+
     ata_init();
     ext2_init();
     vfs_init();
     wm_init();
 
+    //window_t* wnd = wnd_create_new(250, 200, "TEST");
+    //wm_add_window(wnd);
 
     for (;;) {
         //shell_exec();
         wm_update();
     }
-
-    /*for (;;) {
-        asm ("hlt");
-    }*/
 }

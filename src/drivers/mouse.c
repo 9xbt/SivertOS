@@ -9,6 +9,10 @@ void mouse_handler(registers* regs) {
     (void)regs;
 
     u8 status = inb(0x64);
+
+	if (status & 1)
+		mouse_state.last = mouse_state.current;
+
 	while (status & 1) {
 		i8 mouse_in = inb(0x60);
 		if (status & 0x20) {
@@ -30,7 +34,6 @@ void mouse_handler(registers* regs) {
 						break;
 					}
 
-					mouse_state.last 		   = mouse_state.current;
 					mouse_state.current.left   = mouse_byte[0] & 1;
 					mouse_state.current.middle = mouse_byte[0] & 2;
 					mouse_state.current.right  = mouse_byte[0] & 4;

@@ -27,6 +27,7 @@
         "alloc.h": "c",
         "random": "c",
         "printf.h": "c",
-        "heap.h": "c"
+        "heap.h": "c",
+        "chrono": "c"
     }
 }

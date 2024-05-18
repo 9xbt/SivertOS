@@ -98,8 +98,10 @@ void isr_handler(registers* r) {
     asm volatile("cli");
 
     for (u64 y = 0; y < framebuffer->height; y++) {
-        for (u64 x = 0; x < framebuffer->width; x++) { 
-            fb_addr[y * framebuffer->width + x] = 0xAA;
+        for (u64 x = 0; x < framebuffer->width; x++) {
+            u32* addr = framebuffer->address;
+            
+            addr[y * framebuffer->width + x] = 0xAA;
         }
     }
 
