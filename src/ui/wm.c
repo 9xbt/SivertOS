@@ -25,7 +25,7 @@ void wm_update() {
     // remove old cursor
     cv_draw_filled_rectangle(back_fb, mouse_state.last.x - 48, mouse_state.last.y - 48, 96, 96, 0xFFFFFF);
 
-    // TODO: make all of this be a window, like taskbar.c
+    // TODO: make all of this be a window, like taskbar.c or desktop.c
 
     char h[3];
     char m[3];
