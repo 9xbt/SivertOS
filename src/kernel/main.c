@@ -115,9 +115,6 @@ void _start(void) {
     vfs_init();
     wm_init();
 
-    //window_t* wnd = wnd_create_new(250, 200, "TEST");
-    //wm_add_window(wnd);
-
     for (;;) {
         //shell_exec();
         wm_update();
