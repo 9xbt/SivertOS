@@ -19,6 +19,7 @@
 #include <lib/panic.h>
 #include <lib/printf.h>
 #include <apps/shell.h>
+#include <ui/wm.h>
 
 LIMINE_BASE_REVISION(1)
 
@@ -107,9 +108,12 @@ void _start(void) {
     ata_init();
     ext2_init();
     vfs_init();
+    wm_init();
+
 
     for (;;) {
-        shell_exec();
+        //shell_exec();
+        wm_update();
     }
 
     /*for (;;) {

@@ -3,7 +3,7 @@
 void shell_cmd_paint(int argc, char** argv) {
     (void)argc;
     (void)argv;
-
+    
     cv_clear(framebuffer->address, framebuffer->width, framebuffer->height, 0x000000);
 
     while (kb_get_char() == 0) {
