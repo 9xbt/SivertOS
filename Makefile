@@ -54,7 +54,7 @@ QEMUFLAGS = \
 	-serial stdio \
 	-cdrom $(IMAGE_NAME).iso \
 	-boot d \
-	-drive file="ext2.hdd"
+	-drive file="ext2.hdd",format="raw"
 
 # Source files
 CFILES := $(shell cd src && find -L * -type f -name '*.c')

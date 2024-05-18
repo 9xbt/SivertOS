@@ -63,23 +63,23 @@ vfs_node* ext2_finddir(struct vfs_node* vnode, char* path) {
     ext2_inode* dir_inode = (ext2_inode*)kmalloc(sizeof(ext2_inode));
     ext2_read_inode(root_fs, ino_no, dir_inode);
 
-    vfs_node node;
+    vfs_node* node = kmalloc(sizeof(vfs_node));
     u32 path_len = strlen(path);
-    node.name = (char*)kmalloc(path_len);
-    memcpy(node.name, path, path_len);
-    node.perms = 0; // TODO: Implement permissions
+    node->name = (char*)kmalloc(path_len);
+    memcpy(node->name, path, path_len);
+    node->perms = 0; // TODO: Implement permissions
     if (dir_inode->type_perms & EXT_FILE)
-        node.type = VFS_FILE;
+        node->type = VFS_FILE;
     else if (dir_inode->type_perms & EXT_DIRECTORY)
-    node.type = VFS_DIRECTORY;
-    node.size = dir_inode->size;
-    node.ino = ino_no;
-    node.read = ext2_read;
-    node.readdir = ext2_readdir;
-    node.finddir = ext2_finddir;
+    node->type = VFS_DIRECTORY;
+    node->size = dir_inode->size;
+    node->ino = ino_no;
+    node->read = ext2_read;
+    node->readdir = ext2_readdir;
+    node->finddir = ext2_finddir;
     
     kfree(ino);
     kfree(dir_inode);
 
-    return &node;
+    return node;
 }

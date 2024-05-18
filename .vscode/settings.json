@@ -28,6 +28,11 @@
         "random": "c",
         "printf.h": "c",
         "heap.h": "c",
-        "chrono": "c"
+        "chrono": "c",
+        "array": "c",
+        "string_view": "c",
+        "format": "c",
+        "initializer_list": "c",
+        "span": "c"
     }
 }

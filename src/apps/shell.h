@@ -11,6 +11,7 @@
 #include <apps/shell/uptime.h>
 #include <apps/shell/paint.h>
 #include <apps/shell/ls.h>
+#include <apps/shell/cat.h>
 #include <apps/shell/crash.h>
 
 extern const int shell_cmd_count;

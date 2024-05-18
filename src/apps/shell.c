@@ -9,6 +9,7 @@ const char *shell_cmds[] = {
     "uptime",
     "paint",
     "ls",
+    "cat",
     "crash",
 };
 
@@ -19,6 +20,7 @@ const char *shell_cmd_descriptions[] = {
     "Displays how long the system has been running",
     "Simple paint program to test the mouse driver",
     "Lists the files in the current directory",
+    "Prints the contents of a file",
     "As its name suggests, crashes the OS"
 };
 
@@ -29,8 +31,11 @@ const void *shell_cmd_handlers[] = {
     shell_cmd_uptime,
     shell_cmd_paint,
     shell_cmd_ls,
+    shell_cmd_cat,
     shell_cmd_crash
 };
+
+char** str_split(char* input_string, const char delimiter, int* num_tokens);
 
 void shell_exec() {
     const char prompt[] = "\033[91msivert\033[94m / # \033[0m";
@@ -44,13 +49,16 @@ void shell_exec() {
     }
 
     for (int i = 0; i < shell_cmd_count; i++) {
-        if (!strcmp(input, shell_cmds[i])) {
+        if (!strncmp(input, shell_cmds[i], strlen(shell_cmds[i]))) {
             void(*handler)(int, char**);
 
             handler = shell_cmd_handlers[i];
 
+            char** args;
+            args[0] = input;
+
             if (shell_cmd_handlers[i] != NULL)
-                handler(0, NULL);
+                handler(1, args);
 
             return;
         }

@@ -53,6 +53,74 @@ char* strcpy(char* dest, const char* src)
     return ptr;
 }
 
+char* strtok(char* str, const char* delim) {
+    static char* p = NULL;
+    if (str != NULL) { p = str; }
+    else if (p == NULL) { return NULL; }
+
+    char* start = p;
+    while (*p != '\0')  {
+        const char* d = delim;
+        while (*d != '\0') {
+        if (*p == *d) {
+            *p = '\0';
+            p++;
+            if (start == p) {
+            start = p;
+            continue;
+            }
+            return start;
+        }
+        d++;
+        }
+        p++;
+    }
+    if (start == p) { return NULL; }
+    return start;
+}
+
+char* strdup(const char* str) {
+    size_t len = strlen(str) + 1;
+    char* dup = (char*)kmalloc(len);
+
+    if (dup != NULL) {
+        memcpy(dup, str, len);
+    }
+
+    return dup;
+}
+
+void itoa(char *buf, int base, int d) {
+    char *p = buf;
+    char *p1, *p2;
+    unsigned long ud = d;
+    int divisor = 10;
+
+    if (base == 'd' && d < 0) {
+        *p++ = '-';
+        buf++;
+        ud = -d;
+    } else if (base == 'x')
+        divisor = 16;
+
+    do {
+        int remainder = ud % divisor;
+        *p++ = (remainder < 10) ? remainder + '0' : remainder + 'a' - 10;
+    } while (ud /= divisor);
+
+    *p = 0;
+
+    p1 = buf;
+    p2 = p - 1;
+    while (p1 < p2) {
+        char tmp = *p1;
+        *p1 = *p2;
+        *p2 = tmp;
+        p1++;
+        p2--;
+    }
+}
+
 void *memcpy(void *dest, const void *src, size_t n) {
     asm volatile(
         "movq %0, %%rsi\n"
@@ -104,61 +172,4 @@ int memcmp(const void *s1, const void *s2, size_t n) {
     }
 
     return 0;
-}
-
-void itoa(char *buf, int base, int d) {
-    char *p = buf;
-    char *p1, *p2;
-    unsigned long ud = d;
-    int divisor = 10;
-
-    if (base == 'd' && d < 0) {
-        *p++ = '-';
-        buf++;
-        ud = -d;
-    } else if (base == 'x')
-        divisor = 16;
-
-    do {
-        int remainder = ud % divisor;
-        *p++ = (remainder < 10) ? remainder + '0' : remainder + 'a' - 10;
-    } while (ud /= divisor);
-
-    *p = 0;
-
-    p1 = buf;
-    p2 = p - 1;
-    while (p1 < p2) {
-        char tmp = *p1;
-        *p1 = *p2;
-        *p2 = tmp;
-        p1++;
-        p2--;
-    }
-}
-
-char* strtok(char* str, const char* delim) {
-    static char* p = NULL;
-    if (str != NULL) { p = str; }
-    else if (p == NULL) { return NULL; }
-
-    char* start = p;
-    while (*p != '\0')  {
-        const char* d = delim;
-        while (*d != '\0') {
-        if (*p == *d) {
-            *p = '\0';
-            p++;
-            if (start == p) {
-            start = p;
-            continue;
-            }
-            return start;
-        }
-        d++;
-        }
-        p++;
-    }
-    if (start == p) { return NULL; }
-    return start;
 }
