@@ -23,10 +23,13 @@ void wm_init() {
 void wm_update() {
     // remove old cursor
     cv_draw_filled_rectangle(back_fb, mouse_state.last.x - 48, mouse_state.last.y - 48, 96, 96, 0xFFFFFF);
-    // draw new cursor
-    cv_draw_image_alpha(back_fb, wm_mouse_cursor, mouse_state.current.x, mouse_state.current.y);
 
     cv_draw_string(back_fb, wm_default_font, 300, 300, "hello world\n", 0);
+    cv_draw_string(back_fb, wm_default_font, 300, 308, "ill change the font later cause this one has so many issues\n", 0);
+    cv_draw_string(back_fb, wm_default_font, 300, 316, "123ABC this should be one QRSabc\n", 0);
+
+    // draw new cursor
+    cv_draw_image_alpha(back_fb, wm_mouse_cursor, mouse_state.current.x, mouse_state.current.y);
 
     memcpy(front_fb->address, back_fb->address, front_fb->pitch * front_fb->height);
 }
