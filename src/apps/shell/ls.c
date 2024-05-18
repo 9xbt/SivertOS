@@ -3,7 +3,7 @@
 #include <lib/printf.h>
 
 void shell_cmd_ls(int argc, char** argv) {
-    vfs_direntry* dirent;
+    vfs_dirent* dirent;
     int i = 0;
     while ((dirent = vfs_readdir(vfs_root, i)) != NULL) {
         vfs_node* node = vfs_finddir(vfs_root, dirent->name);

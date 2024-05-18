@@ -19,7 +19,7 @@ i32 ext2_read(vfs_node* vnode, u8* buffer, u32 count) {
     return 0;
 }
 
-vfs_direntry* ext2_readdir(struct vfs_node* vnode, u32 index) {
+vfs_dirent* ext2_readdir(struct vfs_node* vnode, u32 index) {
     ext2_inode* ino = (ext2_inode*)kmalloc(sizeof(ext2_inode));
     ext2_read_inode(root_fs, vnode->ino, ino);
     u8* buf = (u8*)kmalloc((ino->sector_count / 2) * root_fs->block_size);
@@ -38,7 +38,7 @@ vfs_direntry* ext2_readdir(struct vfs_node* vnode, u32 index) {
                 kfree(_buf);
                 return NULL;
             }
-            vfs_direntry* dirent = (vfs_direntry*)kmalloc(sizeof(vfs_direntry));
+            vfs_dirent* dirent = (vfs_dirent*)kmalloc(sizeof(vfs_dirent));
             dirent->ino = dir->inode;
             dirent->name = (char*)kmalloc(dir->name_len);
             memcpy(dirent->name, dir->name, dir->name_len);
