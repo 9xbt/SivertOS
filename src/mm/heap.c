@@ -7,6 +7,7 @@
 #include <lib/libc.h>
 #include <lib/alloc.h>
 #include <arch/x86_64/cpu/serial.h>
+#include <mm/pmm.h>
 
 heap* heap_create() {
     heap* h = (heap*)HIGHER_HALF(pmm_alloc(1));

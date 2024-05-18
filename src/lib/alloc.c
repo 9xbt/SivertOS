@@ -1,4 +1,5 @@
 #include <lib/alloc.h>
+#include <mm/heap.h>
 
 heap* kernel_heap;
 

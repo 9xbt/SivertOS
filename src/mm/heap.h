@@ -6,7 +6,6 @@
 #pragma once
 
 #include <types.h>
-#include <mm/pmm.h>
 
 #define HEAP_MAGIC 0xdeadbeef
 
