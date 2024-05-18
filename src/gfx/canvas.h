@@ -2,6 +2,7 @@
 
 #include <types.h>
 #include <gfx/fb.h>
+#include <gfx/font.h>
 
 void cv_clear(fb_t* fb, u32 color);
 void cv_copy_portion(fb_t* dest, fb_t* src, u32 x, u32 y, u32 width, u32 height);

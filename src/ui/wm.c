@@ -2,10 +2,11 @@
 #include <gfx/fb.h>
 #include <gfx/font.h>
 #include <gfx/canvas.h>
-#include <ui/resources.h>
 #include <drivers/kb.h>
+#include <drivers/rtc.h>
 #include <drivers/mouse.h>
 #include <kernel/kernel.h>
+#include <ui/resources.h>
 
 fb_t* wm_mouse_cursor;
 font_t* wm_default_font;
@@ -15,7 +16,7 @@ u64 wm_window_count = 0;
 
 void wm_init() {
     wm_mouse_cursor = fb_create(21, 21, (u32*)wm_mouse_rawdata);
-    wm_default_font = font_create((u8*)wm_font_rawdata, 8, 8);
+    wm_default_font = font_create((u8*)wm_font_rawdata, 8, 16);
 
     cv_clear(back_fb, 0xFFFFFF);
 }
@@ -24,9 +25,23 @@ void wm_update() {
     // remove old cursor
     cv_draw_filled_rectangle(back_fb, mouse_state.last.x - 48, mouse_state.last.y - 48, 96, 96, 0xFFFFFF);
 
-    cv_draw_string(back_fb, wm_default_font, 300, 300, "hello world\n", 0);
-    cv_draw_string(back_fb, wm_default_font, 300, 308, "ill change the font later cause this one has so many issues\n", 0);
-    cv_draw_string(back_fb, wm_default_font, 300, 316, "123ABC this should be one QRSabc\n", 0);
+    char h[3];
+    char m[3];
+    itoa(h, 10, rtc_hour());
+    itoa(m, 10, rtc_minute());
+    if (h[1] == 0) {
+        h[1] = h[0];
+        h[0] = '0';
+    }
+    if (m[1] == 0) {
+        m[1] = m[0];
+        m[0] = '0';
+    }
+
+    cv_draw_filled_rectangle(back_fb, 0, back_fb->height - 28, back_fb->width, 28, 0xc0c0c0);
+    cv_draw_string(back_fb, wm_default_font, back_fb->width - 46, back_fb->height - 22, h, 0);
+    cv_draw_string(back_fb, wm_default_font, back_fb->width - 30, back_fb->height - 22, ":", 0);
+    cv_draw_string(back_fb, wm_default_font, back_fb->width - 22, back_fb->height - 22, m, 0);
 
     // draw new cursor
     cv_draw_image_alpha(back_fb, wm_mouse_cursor, mouse_state.current.x, mouse_state.current.y);

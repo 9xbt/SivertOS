@@ -81,7 +81,7 @@ void cv_draw_char(fb_t* fb, font_t* font, i32 x, i32 y, char c, u32 color) {
     for (int i = 0; i < font->height; i++) {
         for (int o = 0; o < font->width; o++) {
             // Calculate the index in the font data
-            int index = (c - 0x20) * font->height + i;
+            int index = c * font->height + i;
             // Check if the bit is set in the font data
             if (font->data[index] & (1 << (7 - o))) {
                 // Draw the pixel if within bounds
