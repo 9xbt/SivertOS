@@ -25,6 +25,8 @@ void wm_update() {
     // remove old cursor
     cv_draw_filled_rectangle(back_fb, mouse_state.last.x - 48, mouse_state.last.y - 48, 96, 96, 0xFFFFFF);
 
+    // TODO: make all of this be a window, like taskbar.c
+
     char h[3];
     char m[3];
     itoa(h, 10, rtc_hour());
@@ -42,6 +44,7 @@ void wm_update() {
     cv_draw_string(back_fb, wm_default_font, back_fb->width - 46, back_fb->height - 22, h, 0);
     cv_draw_string(back_fb, wm_default_font, back_fb->width - 30, back_fb->height - 22, ":", 0);
     cv_draw_string(back_fb, wm_default_font, back_fb->width - 22, back_fb->height - 22, m, 0);
+    cv_draw_string(back_fb, wm_default_font, back_fb->width - 200, back_fb->height - 44, "For testing purposes only", 0);
 
     // draw new cursor
     cv_draw_image_alpha(back_fb, wm_mouse_cursor, mouse_state.current.x, mouse_state.current.y);
