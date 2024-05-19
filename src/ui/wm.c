@@ -19,15 +19,15 @@ void wm_init() {
     wm_mouse_cursor = fb_create(21, 21, (u32*)wm_mouse_rawdata);
     wm_default_font = font_create((u8*)wm_font_rawdata, 8, 16);
 
-    cv_clear(back_fb, 0xFFFFFF);
+    cv_clear(back_fb, 0xFF000000);
 
     taskbar_start();
 }
 
 void wm_update() {
-    cv_draw_filled_rectangle(back_fb, mouse_state.last.x - 48, mouse_state.last.y - 48, 96, 96, 0xFFFFFF); // remove old cursor
+    cv_draw_filled_rectangle(back_fb, mouse_state.last.x, mouse_state.last.y, 21, 21, 0x000000); // remove old cursor
 
-    cv_draw_string(back_fb, wm_default_font, back_fb->width - 200, back_fb->height - 44, "For testing purposes only", 0);
+    cv_draw_string(back_fb, wm_default_font, back_fb->width - 200, back_fb->height - 44, "For testing purposes only", 0xFFFFFF);
 
     for (int i = 0; i < wm_window_count; i++) {
         wm_windows[i]->paint(wm_windows[i]);
