@@ -59,3 +59,7 @@ void wm_remove_window(window_t* wnd) {
             break;
         }
 }
+
+void wm_paint_window(window_t* wnd) {
+    // FUCKNOODLES
+}

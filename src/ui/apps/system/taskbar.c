@@ -8,7 +8,7 @@
 #include <lib/libc.h>
 
 void taskbar_start() {
-    window_t* wnd = wnd_create_new(back_fb->width, 28, "taskbar");
+    window_t* wnd = wnd_create_new(back_fb->width, 28, "taskbar", WM_NONE);
     wnd->paint = taskbar_paint;
     wnd->x = 0;
     wnd->y = back_fb->height - 28;

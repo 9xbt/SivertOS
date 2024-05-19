@@ -10,7 +10,7 @@
 bool width_increase = true;
 
 void resize_start() {
-    window_t* wnd = wnd_create_new(70, 70, "resizetest");
+    window_t* wnd = wnd_create_new(70, 70, "resizetest", WM_NONE);
     wnd->paint = resize_paint;
     wnd->x = 20;
     wnd->y = 20;
