@@ -29,7 +29,7 @@ void taskbar_paint(window_t* wnd) {
         m[0] = '0';
     }
 
-    cv_draw_filled_rectangle(wnd->contents, 0, wnd->contents->height - 28, wnd->contents->width, 28, 0xc0c0c0);
+    cv_draw_filled_rectangle(wnd->contents, 0, 0, wnd->contents->width, 28, 0xc0c0c0);
     cv_draw_string(wnd->contents, wm_default_font, wnd->contents->width - 46, wnd->contents->height - 22, h, 0);
     cv_draw_string(wnd->contents, wm_default_font, wnd->contents->width - 30, wnd->contents->height - 22, ":", 0);
     cv_draw_string(wnd->contents, wm_default_font, wnd->contents->width - 22, wnd->contents->height - 22, m, 0);
