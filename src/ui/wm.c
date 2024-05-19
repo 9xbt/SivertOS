@@ -9,6 +9,7 @@
 #include <ui/resources.h>
 #include <ui/apps/system/taskbar.h>
 #include <ui/apps/rezisetest.h>
+#include <ui/apps/test.h>
 
 fb_t* wm_mouse_cursor;
 font_t* wm_default_font;
@@ -23,6 +24,7 @@ void wm_init() {
     cv_clear(back_fb, 0xFF000000);
 
     taskbar_start();
+    test_start();
 
     // Only uncomment to see a window resizing example.
     // Do not leave it uncommented as it will memory leak (or just use all of the meory somehow) and slow down and otherwise break everything else in the process.
@@ -62,4 +64,23 @@ void wm_remove_window(window_t* wnd) {
 
 void wm_paint_window(window_t* wnd) {
     // FUCKNOODLES
+    if (wnd->style & WM_BORDER) {
+        // Draw the outermost border lines
+        cv_draw_line(wnd->contents, 1, 1, 1, wnd->contents->height, 0xDFDFDF);
+        cv_draw_line(wnd->contents, 1, 1, wnd->contents->width, 1, 0xDFDFDF);
+        cv_draw_line(wnd->contents, wnd->contents->width - 1, wnd->contents->height - 1, 0, wnd->contents->height - 1, 0xDFDFDF);
+        cv_draw_line(wnd->contents, wnd->contents->width - 1, wnd->contents->height - 1, wnd->contents->width - 1, 0, 0xDFDFDF);
+
+        // Draw the second most out border lines
+        cv_draw_line(wnd->contents, 2, 2, 2, wnd->contents->height - 2, 0xFFFFFF);
+        cv_draw_line(wnd->contents, 2, 2, wnd->contents->width - 1, 2, 0xFFFFFF);
+        cv_draw_line(wnd->contents, wnd->contents->width - 2, wnd->contents->height - 2, 1, wnd->contents->height - 2, 0xFFFFFF);
+        cv_draw_line(wnd->contents, wnd->contents->width - 2, wnd->contents->height - 2, wnd->contents->width - 2, 2, 0xFFFFFF);
+
+        // Draw the two innermost lines (rectangles?)
+        cv_draw_filled_rectangle(wnd->contents, 3, 3, 2, wnd->contents->height - 5, 0xC0C0C0); // Vertical rect
+        cv_draw_filled_rectangle(wnd->contents, 3, 3, wnd->contents->width - 5, 2, 0xC0C0C0); // Horizontal rect
+        cv_draw_filled_rectangle(wnd->contents, wnd->contents->width - 4, 3, 2, wnd->contents->height - 5, 0xC0C0C0); // Vertical rect 2
+        cv_draw_filled_rectangle(wnd->contents, 3, wnd->contents->height - 4, wnd->contents->width - 5, 2, 0xC0C0C0); // Horizontal rect 2
+    }
 }

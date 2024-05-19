@@ -10,7 +10,7 @@ void test_start() {
 }
 
 void test_paint(window_t* wnd) {
-    cv_clear(wnd->contents, 0xAAAAAA);
+    cv_clear(wnd->contents, 0xC0C0C0);
 
     wm_paint_window(wnd);
 }
