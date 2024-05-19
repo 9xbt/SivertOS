@@ -1,5 +1,6 @@
-#include <ui/window.h>
 #include <ui/wm.h>
+#include <ui/window.h>
+#include <ui/apps/test.h>
 #include <gfx/canvas.h>
 
 void test_start() {
