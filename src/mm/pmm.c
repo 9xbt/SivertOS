@@ -92,7 +92,7 @@ void* pmm_alloc(usize n) {
         pmm_last_page = 0;
         first = pmm_find_pages(n);
         if (first == 0) {
-            serial_printf("pmm_alloc(): Couldn't allocate %lu pages: Not enough memory.\n", n);
+            panic("OUT_OF_MEMORY");
             return NULL;
         }
     }
