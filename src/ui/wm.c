@@ -8,6 +8,7 @@
 #include <kernel/kernel.h>
 #include <ui/resources.h>
 #include <ui/apps/system/taskbar.h>
+#include <ui/apps/rezisetest.h>
 
 fb_t* wm_mouse_cursor;
 font_t* wm_default_font;
@@ -22,6 +23,10 @@ void wm_init() {
     cv_clear(back_fb, 0xFF000000);
 
     taskbar_start();
+
+    // Only uncomment to see a window resizing example.
+    // Do not leave it uncommented as it will memory leak (or just use all of the meory somehow) and slow down and otherwise break everything else in the process.
+    //resize_start();
 }
 
 void wm_update() {

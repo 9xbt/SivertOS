@@ -21,6 +21,14 @@ fb_t* fb_create_new(u32 width, u32 height) {
     return fb;
 }
 
+void fb_update_size(fb_t* fb, u32 width, u32 height) {
+    kfree(fb->address);
+    fb->address = (u32*)kmalloc(width * height * 4);
+    fb->width = width;
+    fb->height = height;
+    fb->pitch = width * 4;
+}
+
 void fb_destroy(fb_t* fb) {
     kfree(fb->address);
     kfree(fb);
