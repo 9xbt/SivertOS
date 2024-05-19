@@ -2,6 +2,9 @@
 
 #include <types.h>
 #include <ui/window.h>
+#include <gfx/font.h>
+
+extern font_t* wm_default_font;
 
 void wm_init();
 void wm_update();
