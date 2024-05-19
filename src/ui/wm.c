@@ -30,6 +30,7 @@ void wm_update() {
     cv_draw_string(back_fb, wm_default_font, back_fb->width - 200, back_fb->height - 44, "For testing purposes only", 0);
 
     for (int i = 0; i < wm_window_count; i++) {
+        wm_windows[i]->paint(wm_windows[i]);
         cv_draw_image(back_fb, wm_windows[i]->x, wm_windows[i]->y, wm_windows[i]->contents);
     }
 
