@@ -35,8 +35,8 @@ void mouse_handler(registers* regs) {
 					}
 
 					mouse_state.current.left   = mouse_byte[0] & 1;
-					mouse_state.current.middle = mouse_byte[0] & 2;
-					mouse_state.current.right  = mouse_byte[0] & 4;
+					mouse_state.current.right  = mouse_byte[0] & 2;
+					mouse_state.current.middle = mouse_byte[0] & 4;
 					mouse_state.current.x 	  += mouse_byte[1];
 					mouse_state.current.y 	  -= mouse_byte[2];
 					mouse_cycle = 0;

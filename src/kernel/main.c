@@ -113,10 +113,11 @@ void _start(void) {
     ata_init();
     ext2_init();
     vfs_init();
+    shell_init();
     wm_init();
 
     for (;;) {
-        //shell_exec();
-        wm_update();
+        shell_exec();
+        //wm_update();
     }
 }

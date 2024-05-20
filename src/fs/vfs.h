@@ -11,21 +11,23 @@
 #define VFS_DIRECTORY 0x2
 #define VFS_DEVICE 0x3
 
+#define VFS_DESTROY 0x1 // Destroy perm
+
 typedef struct {
-    char* name;
-    u32 ino;
+  char* name;
+  u32 ino;
 } vfs_dirent;
 
 typedef struct vfs_node {
-    char* name;
-    u32 perms;
-    u32 type;
-    u32 size;
-    u32 ino;
-    i32(*read)(struct vfs_node* vnode, u8* buffer, u32 count);
-    i32(*write)(struct vfs_node* vnode, u8* buffer, u32 count);
-    vfs_dirent*(*readdir)(struct vfs_node* vnode, u32 index);
-    struct vfs_node*(*finddir)(struct vfs_node* vnode, char* path);
+  char* name;
+  u32 perms;
+  u32 type;
+  u32 size;
+  u32 ino;
+  i32(*read)(struct vfs_node* vnode, u8* buffer, u32 count);
+  i32(*write)(struct vfs_node* vnode, u8* buffer, u32 count);
+  vfs_dirent*(*readdir)(struct vfs_node* vnode, u32 index);
+  struct vfs_node*(*finddir)(struct vfs_node* vnode, char* path);
 } vfs_node;
 
 extern vfs_node* vfs_root; // "/" path
@@ -36,3 +38,4 @@ i32 vfs_read(vfs_node* vnode, u8* buffer, u32 count);
 vfs_dirent* vfs_readdir(vfs_node* vnode, u32 index);
 vfs_node* vfs_finddir(vfs_node* vnode, char* path);
 vfs_node* vfs_open(vfs_node* vnode, char* path); // traverse directories
+void vfs_destroy(vfs_node* vnode);

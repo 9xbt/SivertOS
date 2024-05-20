@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ui/wm.h>
 #include <lib/printf.h>
 #include <gfx/canvas.h>
 #include <drivers/kb.h>

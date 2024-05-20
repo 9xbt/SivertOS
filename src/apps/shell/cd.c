@@ -1,15 +1,16 @@
-#include <fs/vfs.h>
-#include <lib/alloc.h>
-#include <lib/printf.h>
 #include <apps/shell.h>
 
-void shell_cmd_ls(int argc, char** argv) {
+void shell_cmd_cd(int argc, char** argv) {
     vfs_dirent* dirent;
     int i = 0;
     while ((dirent = vfs_readdir(shell_current_dir, i)) != NULL) {
         vfs_node* node = vfs_finddir(shell_current_dir, dirent->name);
 
-        printf("%s%s\033[0m  ", (node->type == VFS_DIRECTORY ? "\033[94m" : "\033[91m"), dirent->name);
+        if (!strcmp(dirent->name, argv[0] + 3) && node->type == VFS_DIRECTORY) {
+            shell_current_dir = node;
+            return;
+        }
+
         kfree(dirent->name);
         kfree(dirent);
         kfree(node->name);
@@ -17,5 +18,5 @@ void shell_cmd_ls(int argc, char** argv) {
         i++;
     }
 
-    printf("\n");
+    printf("cd: directory \"%s\" not found\n", argv[0] + 3);
 }

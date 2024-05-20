@@ -3,6 +3,7 @@
  *  https://github.com/asterd-og/ZanOS/
  */
 
+#include <mm/pmm.h>
 #include <fs/ext2.h>
 #include <lib/libc.h>
 #include <lib/alloc.h>
@@ -33,17 +34,17 @@ vfs_dirent* ext2_readdir(struct vfs_node* vnode, u32 index) {
         dir = (ext2_dirent*)buf;
         buf += dir->total_size;
         if (i == index) {
-            kfree(ino);
-            if (dir->inode == 0) {
-                kfree(_buf);
-                return NULL;
-            }
-            vfs_dirent* dirent = (vfs_dirent*)kmalloc(sizeof(vfs_dirent));
-            dirent->ino = dir->inode;
-            dirent->name = (char*)kmalloc(dir->name_len);
-            memcpy(dirent->name, dir->name, dir->name_len);
+        kfree(ino);
+        if (dir->inode == 0) {
             kfree(_buf);
-            return dirent;
+            return NULL;
+        }
+        vfs_dirent* dirent = (vfs_dirent*)kmalloc(sizeof(vfs_dirent));
+        dirent->ino = dir->inode;
+        dirent->name = (char*)kmalloc(dir->name_len);
+        memcpy(dirent->name, dir->name, dir->name_len);
+        kfree(_buf);
+        return dirent;
         }
         i++;
     }
@@ -53,6 +54,11 @@ vfs_dirent* ext2_readdir(struct vfs_node* vnode, u32 index) {
 }
 
 vfs_node* ext2_finddir(struct vfs_node* vnode, char* path) {
+    // TODO: implement devices
+    /*if (vnode == vfs_root && !strcmp(path, "dev")) {
+        return vfs_dev;
+    }*/
+
     ext2_inode* ino = (ext2_inode*)kmalloc(sizeof(ext2_inode));
     ext2_read_inode(root_fs, vnode->ino, ino);
     u32 ino_no = ext2_get_inode(root_fs, ino, path);
@@ -63,16 +69,17 @@ vfs_node* ext2_finddir(struct vfs_node* vnode, char* path) {
     ext2_inode* dir_inode = (ext2_inode*)kmalloc(sizeof(ext2_inode));
     ext2_read_inode(root_fs, ino_no, dir_inode);
 
-    vfs_node* node = kmalloc(sizeof(vfs_node));
+    vfs_node* node = (vfs_node*)kmalloc(sizeof(vfs_node));
     u32 path_len = strlen(path);
     node->name = (char*)kmalloc(path_len);
     memcpy(node->name, path, path_len);
-    node->perms = 0; // TODO: Implement permissions
+    node->perms |= VFS_DESTROY;
     if (dir_inode->type_perms & EXT_FILE)
         node->type = VFS_FILE;
     else if (dir_inode->type_perms & EXT_DIRECTORY)
-    node->type = VFS_DIRECTORY;
-    node->size = dir_inode->size;
+        node->type = VFS_DIRECTORY;
+    // To make sure it can read blocks without interfering in other allocations.
+    node->size = ALIGN_UP(dir_inode->size, root_fs->block_size);
     node->ino = ino_no;
     node->read = ext2_read;
     node->readdir = ext2_readdir;
