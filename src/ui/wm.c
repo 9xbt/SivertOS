@@ -63,24 +63,52 @@ void wm_remove_window(window_t* wnd) {
 }
 
 void wm_paint_window(window_t* wnd) {
-    // FUCKNOODLES
+    // Render & preform logic for controls
+    for (int i = 0; i < wnd->control_count; i++) {
+        wnd->controls[i]->update(wnd->controls[i]);
+        cv_draw_image(wnd->contents, wnd->controls[i]->x, wnd->controls[i]->y, wnd->controls[i]->contents);
+    }
+
+    if (wnd->style & WM_NONE) return;
+
     if (wnd->style & WM_BORDER) {
         // Draw the outermost border lines
-        cv_draw_line(wnd->contents, 1, 1, 1, wnd->contents->height, 0xDFDFDF);
-        cv_draw_line(wnd->contents, 1, 1, wnd->contents->width, 1, 0xDFDFDF);
+        cv_draw_line(wnd->contents, 0, 0, 0, wnd->contents->height, 0xDFDFDF);
+        cv_draw_line(wnd->contents, 0, 0, wnd->contents->width, 0, 0xDFDFDF);
         cv_draw_line(wnd->contents, wnd->contents->width - 1, wnd->contents->height - 1, 0, wnd->contents->height - 1, 0xDFDFDF);
         cv_draw_line(wnd->contents, wnd->contents->width - 1, wnd->contents->height - 1, wnd->contents->width - 1, 0, 0xDFDFDF);
 
         // Draw the second most out border lines
-        cv_draw_line(wnd->contents, 2, 2, 2, wnd->contents->height - 2, 0xFFFFFF);
-        cv_draw_line(wnd->contents, 2, 2, wnd->contents->width - 1, 2, 0xFFFFFF);
+        cv_draw_line(wnd->contents, 1, 1, 1, wnd->contents->height - 1, 0xFFFFFF);
+        cv_draw_line(wnd->contents, 1, 1, wnd->contents->width - 2, 1, 0xFFFFFF);
         cv_draw_line(wnd->contents, wnd->contents->width - 2, wnd->contents->height - 2, 1, wnd->contents->height - 2, 0xFFFFFF);
-        cv_draw_line(wnd->contents, wnd->contents->width - 2, wnd->contents->height - 2, wnd->contents->width - 2, 2, 0xFFFFFF);
+        cv_draw_line(wnd->contents, wnd->contents->width - 2, wnd->contents->height - 2, wnd->contents->width - 2, 0, 0xFFFFFF);
 
         // Draw the two innermost lines (rectangles?)
-        cv_draw_filled_rectangle(wnd->contents, 3, 3, 2, wnd->contents->height - 5, 0xC0C0C0); // Vertical rect
-        cv_draw_filled_rectangle(wnd->contents, 3, 3, wnd->contents->width - 5, 2, 0xC0C0C0); // Horizontal rect
-        cv_draw_filled_rectangle(wnd->contents, wnd->contents->width - 4, 3, 2, wnd->contents->height - 5, 0xC0C0C0); // Vertical rect 2
-        cv_draw_filled_rectangle(wnd->contents, 3, wnd->contents->height - 4, wnd->contents->width - 5, 2, 0xC0C0C0); // Horizontal rect 2
+        cv_draw_filled_rectangle(wnd->contents, 2, 2, 2, wnd->contents->height - 5, 0xC0C0C0); // Vertical rect
+        cv_draw_filled_rectangle(wnd->contents, 2, 2, wnd->contents->width - 5, 2, 0xC0C0C0); // Horizontal rect
+        cv_draw_filled_rectangle(wnd->contents, wnd->contents->width - 4, 2, 2, wnd->contents->height - 5, 0xC0C0C0); // Vertical rect 2
+        cv_draw_filled_rectangle(wnd->contents, 2, wnd->contents->height - 4, wnd->contents->width - 4, 2, 0xC0C0C0); // Horizontal rect 2
+    }
+
+    if (wnd->style & WM_TITLEBAR) {
+        cv_draw_filled_rectangle(wnd->contents, 4, 4,  wnd->contents->width - 8, 18, 0x000180 /*0xDB0D14*/); // Title bar background
+        cv_draw_string(wnd->contents, wm_default_font, 7, 6, wnd->title, 0xFFFFFF); // Window title text
+    }
+
+    if (wnd->style & WM_MINIMIZABLE) {
+        // Do this later
+    }
+
+    if (wnd->style & WM_MAXIMIZABLE) {
+        // Do this slightly less later
+    }
+
+    if (wnd->style & WM_CLOSABLE) {
+        // Do this the least later, once buttons are a thing
+    }
+
+    if (wnd->style & WM_RESIZABLE) {
+        // This would be easy but i dont wanna do it right now
     }
 }

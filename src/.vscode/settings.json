@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "paint.h": "c",
+        "mouse.h": "c",
+        "alloc.h": "c",
+        "fb.h": "c",
+        "taskbar.h": "c",
+        "canvas.h": "c",
+        "kernel.h": "c",
+        "window.h": "c",
+        "control.h": "c",
+        "wm.h": "c"
+    }
+}

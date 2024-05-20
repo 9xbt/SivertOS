@@ -25,7 +25,7 @@ void cv_draw_line(fb_t* fb, u32 x1, u32 y1, u32 x2, u32 y2, u32 color) {
     int err = (dx > dy ? dx : -dy) / 2;
 
     while (x1 != x2 || y1 != y2) {
-        if (x1 > 0 && y1 > 0 && x1 < fb->width && y1 < fb->height)
+        if (x1 >= 0 && y1 >= 0 && x1 < fb->width && y1 < fb->height)
             fb->address[y1 * fb->width + x1] = color;
 
         int e2 = err;
